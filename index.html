@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mewari Achar Poster Generator</title>
+    <!-- Google Fonts for Premium Aesthetics -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700;800&family=Outfit:wght@300;400;500;600;700;900&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css?v=2.1">
+    <!-- html2canvas library for PDF/Image download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Controls -->
+        <aside class="control-panel">
+            <header class="panel-header">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-pepper-hot"></i>
+                    <span>Shahi Customizer</span>
+                </div>
+                <h1>Mewari Achar Poster Generator</h1>
+                <p>Craft premium marketing posters for social media and Flipkart-style banners</p>
+            </header>
+
+            <form id="poster-form" onsubmit="event.preventDefault();">
+                <!-- Section 1: Product Selector -->
+                <div class="form-section">
+                    <h2><span class="step-num">1</span> Select Product Preset</h2>
+                    <div class="product-selector-grid">
+                        <button type="button" class="preset-btn active" data-preset="ginger">
+                            <div class="thumb-container">
+                                <img src="assets/images/ginger.png" alt="Ginger">
+                            </div>
+                            <span>Ginger</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="turmeric">
+                            <div class="thumb-container">
+                                <img src="assets/images/turmeric.png" alt="Turmeric">
+                            </div>
+                            <span>Turmeric</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="mango">
+                            <div class="thumb-container">
+                                <img src="assets/images/mango.png" alt="Mango">
+                            </div>
+                            <span>Mango</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="amla">
+                            <div class="thumb-container">
+                                <img src="assets/images/amla.png" alt="Amla">
+                            </div>
+                            <span>Amla</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="chili">
+                            <div class="thumb-container">
+                                <img src="assets/images/chili.png" alt="Chili">
+                            </div>
+                            <span>Chili</span>
+                        </button>
+                    </div>
+
+                    <!-- Add Custom Preset Button & Panel -->
+                    <button type="button" id="btn-add-preset" class="btn-secondary mt-3">
+                        <i class="fa-solid fa-plus-circle"></i> Add Custom Preset
+                    </button>
+                    
+                    <div id="add-preset-panel" class="collapsible-panel mt-3" style="display: none;">
+                        <h3 class="panel-subtitle">Create New Preset</h3>
+                        <div class="input-group">
+                            <label for="new-preset-id">Preset ID (lowercase, e.g. garlic)</label>
+                            <input type="text" id="new-preset-id" placeholder="e.g. garlic">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="new-preset-name-en">Name (EN)</label>
+                                <input type="text" id="new-preset-name-en" placeholder="Garlic Pickle">
+                            </div>
+                            <div class="input-group">
+                                <label for="new-preset-name-hi">Name (HI)</label>
+                                <input type="text" id="new-preset-name-hi" placeholder="लहसुन का अचार">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="new-preset-desc-en">Description (EN)</label>
+                            <textarea id="new-preset-desc-en" rows="2" placeholder="Garlic cloves pickled in traditional spices..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="new-preset-desc-hi">Description (HI)</label>
+                            <textarea id="new-preset-desc-hi" rows="2" placeholder="पारंपरिक मसालों में तैयार लहसुन का अचार..."></textarea>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="new-preset-price500g">Price 500g</label>
+                                <input type="number" id="new-preset-price500g" value="250">
+                            </div>
+                            <div class="input-group">
+                                <label for="new-preset-price1kg">Price 1kg</label>
+                                <input type="number" id="new-preset-price1kg" value="490">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="new-preset-color">Theme Color</label>
+                                <input type="color" id="new-preset-color" value="#a04000" class="color-picker-input">
+                            </div>
+                            <div class="input-group">
+                                <label>Image</label>
+                                <div class="file-upload-btn compact-upload">
+                                    <input type="file" id="new-preset-image" accept="image/*">
+                                    <i class="fa-solid fa-camera"></i> Upload
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-actions mt-3">
+                            <button type="button" id="btn-save-preset" class="btn-save">
+                                <i class="fa-solid fa-check"></i> Save
+                            </button>
+                            <button type="button" id="btn-cancel-preset" class="btn-cancel">
+                                <i class="fa-solid fa-xmark"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Poster Format (Aspect Ratio) -->
+                <div class="form-section">
+                    <h2><span class="step-num">2</span> Poster Format</h2>
+                    <div class="ratio-selector">
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-ratio" value="square" checked>
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-square"></i>
+                                <span>Square (1:1)</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-ratio" value="landscape">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-rectangle-ad"></i>
+                                <span>Banner (16:9)</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-ratio" value="story">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                                <span>Story (9:16)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 3: Layout & Theme -->
+                <div class="form-section">
+                    <h2><span class="step-num">3</span> Choose Poster Theme</h2>
+                    <div class="theme-selector">
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="royal-durbar" checked>
+                            <div class="theme-card royal-durbar-card">
+                                <i class="fa-solid fa-crown"></i>
+                                <span>Royal Durbar</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="midnight-gold">
+                            <div class="theme-card midnight-gold-card">
+                                <i class="fa-solid fa-moon"></i>
+                                <span>Midnight Gold</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="spiced-splash">
+                            <div class="theme-card spiced-splash-card">
+                                <i class="fa-solid fa-palette"></i>
+                                <span>Spiced Splash</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="ivory-minimal">
+                            <div class="theme-card ivory-minimal-card">
+                                <i class="fa-solid fa-leaf"></i>
+                                <span>Ivory Minimal</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="vintage-haveli">
+                            <div class="theme-card vintage-haveli-card">
+                                <i class="fa-solid fa-archway"></i>
+                                <span>Vintage Haveli</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="marwar-saffron">
+                            <div class="theme-card marwar-saffron-card">
+                                <i class="fa-solid fa-sun"></i>
+                                <span>Marwar Saffron</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="jaipur-pink">
+                            <div class="theme-card jaipur-pink-card">
+                                <i class="fa-solid fa-chess-castle"></i>
+                                <span>Jaipur Pink</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="thar-desert">
+                            <div class="theme-card thar-desert-card">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Thar Desert</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="emerald-mewar">
+                            <div class="theme-card emerald-mewar-card">
+                                <i class="fa-solid fa-gem"></i>
+                                <span>Emerald Mewar</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="royal-indigo">
+                            <div class="theme-card royal-indigo-card">
+                                <i class="fa-solid fa-bowl-food"></i>
+                                <span>Royal Indigo</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="golden-karigari">
+                            <div class="theme-card golden-karigari-card">
+                                <i class="fa-solid fa-ring"></i>
+                                <span>Golden Karigari</span>
+                            </div>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="poster-theme" value="mughal-garden">
+                            <div class="theme-card mughal-garden-card">
+                                <i class="fa-solid fa-seedling"></i>
+                                <span>Mughal Garden</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 4: Select Language -->
+                <div class="form-section">
+                    <h2><span class="step-num">4</span> Select Poster Language</h2>
+                    <div class="ratio-selector">
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-lang" value="english">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-language"></i>
+                                <span>English</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-lang" value="hindi">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-language"></i>
+                                <span>हिन्दी</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option full-width" style="grid-column: span 2; margin-top: 8px;">
+                            <input type="radio" name="poster-lang" value="hinglish" checked>
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-language"></i>
+                                <span>Hinglish (Mix)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 5: Text Customizer -->
+                <div class="form-section">
+                    <h2><span class="step-num">5</span> Customize Text</h2>
+                    <div class="input-group">
+                        <label for="brand-title">Brand Name</label>
+                        <input type="text" id="brand-title" value="मेवाड़ की विरासत" placeholder="e.g. मेवाड़ की विरासत">
+                    </div>
+                    <div class="input-group">
+                        <label for="product-name">Product Title</label>
+                        <input type="text" id="product-name" value="अदरक का अचार" placeholder="e.g. अदरक का अचार">
+                    </div>
+                    <div class="input-group">
+                        <label for="product-desc">Description / Tagline</label>
+                        <textarea id="product-desc" rows="3" placeholder="Brief tagline or description...">नींबू के रस और मसालों में डूबा अदरक। स्वाद और पाचन के लिए बेहतरीन।</textarea>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="badge-text">Promo Badge</label>
+                            <input type="text" id="badge-text" value="100% Homemade" placeholder="e.g. 100% Homemade">
+                        </div>
+                        <div class="input-group">
+                            <label for="badge-style">Badge Shape</label>
+                            <select id="badge-style">
+                                <option value="classic">Classic Banner</option>
+                                <option value="ribbon">Royal Ribbon</option>
+                                <option value="minimal">Minimal Pill</option>
+                                <option value="hide">Hidden</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-row mt-3">
+                        <div class="input-group">
+                            <label for="image-tag-text">Image Promo Tag</label>
+                            <input type="text" id="image-tag-text" value="" placeholder="e.g. Summer Special (Leave blank to hide)">
+                        </div>
+                        <div class="input-group">
+                            <label for="image-tag-style">Tag Style</label>
+                            <select id="image-tag-style">
+                                <option value="modern-ribbon">Modern Ribbon</option>
+                                <option value="elegant-gold">Elegant Gold</option>
+                                <option value="vibrant-red">Vibrant Red</option>
+                                <option value="glass-pill">Glass Pill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Section 6: Pricing Customizer -->
+                <div class="form-section">
+                    <h2><span class="step-num">6</span> Pricing Customization</h2>
+                    <div class="checkbox-group">
+                        <label class="switch">
+                            <input type="checkbox" id="show-500g" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="show-500g">Show 500g Jar Price</label>
+                    </div>
+                    <div class="input-group price-input" id="price-500g-group">
+                        <label for="price-500g">500g Jar Price (₹)</label>
+                        <input type="number" id="price-500g" value="290">
+                    </div>
+
+                    <div class="checkbox-group mt-3">
+                        <label class="switch">
+                            <input type="checkbox" id="show-1kg" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="show-1kg">Show 1kg Jar Price</label>
+                    </div>
+                    <div class="input-group price-input" id="price-1kg-group">
+                        <label for="price-1kg">1kg Jar Price (₹)</label>
+                        <input type="number" id="price-1kg" value="579">
+                    </div>
+                </div>
+
+                <!-- Section 7: Brand Logo & Product Images -->
+                <div class="form-section">
+                    <h2><span class="step-num">7</span> Logo & Product Media</h2>
+                    <div class="input-group">
+                        <label for="custom-logo">Upload Brand Logo (Optional)</label>
+                        <div class="file-upload-btn">
+                            <input type="file" id="custom-logo" accept="image/*">
+                            <i class="fa-solid fa-shield-halved"></i> Choose Logo File
+                        </div>
+                        <div id="logo-name-display" class="file-name">Using Royal Crest Logo</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="custom-image">Upload Custom Product Image</label>
+                        <div class="file-upload-btn">
+                            <input type="file" id="custom-image" accept="image/*">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Choose Product Image
+                        </div>
+                        <div id="file-name-display" class="file-name">No custom file chosen</div>
+                    </div>
+                </div>
+
+
+
+                <!-- Export Toolbar -->
+                <div class="export-actions">
+                    <button type="button" id="btn-download" class="btn-primary">
+                        <i class="fa-solid fa-download"></i> Download Poster (PNG)
+                    </button>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Live Preview Area -->
+        <main class="preview-area">
+            <div class="preview-wrapper">
+                <div class="preview-badge" id="preview-ratio-label">Live Poster Preview (1:1 Ratio)</div>
+                
+                <!-- Poster Target Container for html2canvas -->
+                <div id="poster-canvas" class="poster-container theme-royal-durbar ratio-square">
+                    <!-- Ornate Border Overlays -->
+                    <div class="border-top-left"></div>
+                    <div class="border-top-right"></div>
+                    <div class="border-bottom-left"></div>
+                    <div class="border-bottom-right"></div>
+
+                    <!-- Watermark Pattern Background -->
+                    <div class="poster-pattern"></div>
+
+                    <!-- Flipkart Banner Layout Elements (Visible only in theme-flipkart-modern) -->
+                    <div class="fk-brand-badge">Flipkart Unique</div>
+                    <div class="fk-sale-header-tag" id="preview-fk-sale-tag">GRWM SALE</div>
+                    <div class="fk-main-discount" id="preview-fk-discount">MIN. 50% OFF</div>
+                    <div class="fk-cta-btn" id="preview-fk-cta-text">SHOP NOW</div>
+                    <div class="fk-sub-detail">Power of Mewar Spices</div>
+                    <div class="fk-logo-container">
+                        <img id="fk-logo-preview" src="Mewari Achaar Logo.png" alt="Brand Logo">
+                    </div>
+
+                    <div class="poster-layout-grid">
+                        <!-- Image Side -->
+                        <div class="poster-image-side">
+                            <!-- Royal Saffron Mandala Ornament -->
+                            <div class="image-bg-ornament">
+                                <svg viewBox="0 0 100 100" class="mandala-svg">
+                                    <circle cx="50" cy="50" r="48" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.3"/>
+                                    <circle cx="50" cy="50" r="42" fill="none" stroke="var(--gold-primary)" stroke-width="0.8" stroke-dasharray="1 2" opacity="0.4"/>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.3"/>
+                                    <g stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.4">
+                                        <path d="M50,2 L50,98 M2,50 L98,50 M16,16 L84,84 M16,84 L84,16" />
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(0 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(30 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(60 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(90 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(120 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(150 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(180 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(210 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(240 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(270 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(300 50 50)"/>
+                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(330 50 50)"/>
+                                    </g>
+                                    <circle cx="50" cy="50" r="15" fill="none" stroke="var(--gold-primary)" stroke-width="0.8" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <div class="image-container-wrapper">
+                                <div class="image-frame-shadow">
+                                    <div class="image-promo-tag" id="preview-image-tag" style="display: none;"></div>
+                                    <div class="poster-image-frame">
+                                        <img id="poster-img" src="assets/images/ginger.png" alt="Pickle Preview">
+                                    </div>
+                                </div>
+                                <div class="image-side-caption" id="preview-image-caption">
+                                    <div class="caption-title" id="preview-caption-title">Special Collection</div>
+                                    <div class="caption-desc" id="preview-caption-desc">Hukum, every jar of ours contains the old tradition of Mewar. Whether it is Mathania's chili or turmeric linked to tradition, every taste is incomparable.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info & Customizer Side -->
+                        <div class="poster-info-side">
+                            <div class="info-side-content">
+                                <div class="poster-header">
+                                    <!-- Logo Header Row -->
+                                    <div class="poster-logo-row">
+                                        <div class="brand-logo-wrapper">
+                                            <!-- Custom Royal Crest SVG Logo -->
+                                            <svg id="default-royal-crest" class="royal-crest-svg" viewBox="0 0 100 100" width="45" height="45" style="display: none;">
+                                                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold-primary)" stroke-width="2"/>
+                                                <circle cx="50" cy="50" r="41" fill="none" stroke="var(--gold-dark)" stroke-width="0.7" stroke-dasharray="2 1"/>
+                                                <!-- Mewar Sunburst Rays -->
+                                                <g stroke="var(--gold-primary)" stroke-width="1.5">
+                                                    <line x1="50" y1="12" x2="50" y2="19"/>
+                                                    <line x1="50" y1="88" x2="50" y2="81"/>
+                                                    <line x1="12" y1="50" x2="19" y2="50"/>
+                                                    <line x1="88" y1="50" x2="81" y2="50"/>
+                                                    <line x1="23" y1="23" x2="28" y2="28"/>
+                                                    <line x1="77" y1="77" x2="72" y2="72"/>
+                                                    <line x1="23" y1="77" x2="28" y2="72"/>
+                                                    <line x1="77" y1="23" x2="72" y2="28"/>
+                                                </g>
+                                                <!-- Royal Shield -->
+                                                <polygon points="50,25 64,34 60,63 50,73 40,63 36,34" fill="var(--gold-dark)" opacity="0.15"/>
+                                                <polygon points="50,25 64,34 60,63 50,73 40,63 36,34" fill="none" stroke="var(--gold-primary)" stroke-width="1.2"/>
+                                                <!-- Crown -->
+                                                <path d="M44,36 L42,43 L58,43 L56,36 L50,39 Z" fill="var(--gold-primary)"/>
+                                                <!-- Inner Leaf -->
+                                                <path d="M50,47 C48,51 48,57 50,60 C52,57 52,51 50,47 Z" fill="var(--gold-light)"/>
+                                                <!-- Swords -->
+                                                <line x1="22" y1="78" x2="35" y2="65" stroke="var(--gold-primary)" stroke-width="1.5"/>
+                                                <line x1="78" y1="78" x2="65" y2="65" stroke="var(--gold-primary)" stroke-width="1.5"/>
+                                            </svg>
+                                            <img id="custom-logo-preview" class="custom-logo-img" src="Mewari Achaar Logo.png" alt="Brand Logo" style="display: block;">
+                                        </div>
+                                        <div class="brand-text-block">
+                                            <span class="poster-brand-title" id="preview-brand-title">मेवाड़ की विरासत</span>
+                                            <span class="poster-brand-tagline">शाही राजस्थानी स्वाद</span>
+                                        </div>
+                                    </div>
+                                    <h2 class="poster-product-name" id="preview-product-name">Ginger Pickle</h2>
+                                    <div class="brand-divider"></div>
+                                </div>
+
+                                <p class="poster-description" id="preview-product-desc">
+                                    Ginger strips soaked in lemon juice and spices. Great for taste and digestion.
+                                </p>
+
+                                <!-- Premium Packaging Info Badge -->
+                                <div class="poster-packaging-box">
+                                    <div class="packaging-badge">
+                                        <i class="fa-solid fa-jar"></i>
+                                        <span>Available in 500g & 1kg Jars</span>
+                                    </div>
+                                    <div class="packaging-tagline">Order on WhatsApp for Fresh Homemade Taste</div>
+                                    <div class="packaging-bulk-offers">
+                                        <i class="fa-solid fa-tags"></i>
+                                        <span>Offers available on Bulk Orders!</span>
+                                    </div>
+                                </div>
+
+                                <!-- Prices & Promo Badge -->
+                                <div class="poster-prices-row">
+                                    <div class="poster-price-card" id="price-card-500g">
+                                        <span class="size-label">500g Jar</span>
+                                        <span class="price-value" id="preview-price-500g">₹290</span>
+                                    </div>
+                                    <div class="poster-price-card" id="price-card-1kg">
+                                        <span class="size-label">1kg Jar</span>
+                                        <span class="price-value" id="preview-price-1kg">₹579</span>
+                                    </div>
+                                    <div class="poster-promo-badge" id="preview-promo-badge">
+                                        <div class="badge-content">100% Homemade</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="info-side-footer">
+                                <!-- Footer Contact Info -->
+                                <div class="poster-footer">
+                                    <div class="whatsapp-cta-button">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                        <div class="cta-text-wrapper">
+                                            <span class="cta-label" id="preview-whatsapp-cta">Order on WhatsApp</span>
+                                            <span class="cta-phone" id="preview-whatsapp-num">+91 70141012742</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Website Link -->
+                                <div class="poster-website-link">
+                                    <i class="fa-solid fa-globe"></i>
+                                    <span id="preview-website-url">www.mewari-achar.shop</span>
+                                </div>
+                                <!-- Disclaimer -->
+                                <div class="poster-disclaimer">
+                                    * Rates may vary based on delivery location.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Custom JS File -->
+    <script src="app.js?v=1.5"></script>
+</body>
+</html>
