@@ -153,6 +153,20 @@
                                 <span>Story (9:16)</span>
                             </div>
                         </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-ratio" value="print-banner">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-scroll"></i>
+                                <span>Print Banner (3:2)</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-ratio" value="flyer">
+                            <div class="ratio-card">
+                                <i class="fa-solid fa-note-sticky"></i>
+                                <span>Flyer (4:3)</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
@@ -322,6 +336,99 @@
                     </div>
                 </div>
 
+                <!-- Section 5B: Marketing & Campaigns -->
+                <div class="form-section">
+                    <h2><span class="step-num">5B</span> Marketing & Campaigns</h2>
+                    <p class="section-desc">Overlay custom banners and festive themes on the poster</p>
+                    <div class="input-group">
+                        <label for="campaign-mode">Campaign Mode</label>
+                        <select id="campaign-mode">
+                            <option value="showcase" selected>Product Showcase (Default)</option>
+                            <option value="discount">Discount Offer Overlay</option>
+                            <option value="festival">Festive Greeting Mode</option>
+                        </select>
+                    </div>
+                    <div id="campaign-text-inputs" style="display: none; margin-top: 10px;">
+                        <div class="input-group">
+                            <label for="campaign-title">Promo Title / Main Offer</label>
+                            <input type="text" id="campaign-title" value="BUY 1 GET 1 FREE" placeholder="e.g. FLAT 20% OFF">
+                        </div>
+                        <div class="input-group">
+                            <label for="campaign-subtitle">Promo Subtext / Validity</label>
+                            <input type="text" id="campaign-subtitle" value="Offer valid till Sunday only" placeholder="e.g. Free shipping on orders above ₹500">
+                        </div>
+                    </div>
+                    <div id="festival-style-inputs" style="display: none; margin-top: 10px;">
+                        <div class="input-group">
+                            <label for="festival-decoration">Festive Overlay Theme</label>
+                            <select id="festival-decoration">
+                                <option value="marigold">Traditional Marigold Garland</option>
+                                <option value="diya">Diwali Diya Lamps</option>
+                                <option value="mandala">Auspicious Mandala Borders</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="checkbox-group mt-3">
+                        <label class="switch">
+                            <input type="checkbox" id="show-qr-code">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="show-qr-code">Include WhatsApp Order QR Code</label>
+                    </div>
+                </div>
+
+                <!-- Section 5C: Promotional Badges & Seals -->
+                <div class="form-section">
+                    <h2><span class="step-num">5C</span> Marketing Badges</h2>
+                    <p class="section-desc">Toggle premium badges to overlay on the product image side</p>
+                    <div class="ratio-selector" style="grid-template-columns: repeat(2, 1fr); gap: 10px; cursor: pointer;">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="sticker-bestseller">
+                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">🔥 Best Seller Seal</span>
+                        </label>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="sticker-organic">
+                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">🌿 100% Organic</span>
+                        </label>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="sticker-traditional">
+                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">👑 Royal Heritage</span>
+                        </label>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="sticker-limited">
+                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">⚡ Limited Stock</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 5D: Image Adjustments (Zoom & Pan) -->
+                <div class="form-section">
+                    <h2><span class="step-num">5D</span> Adjust Image Layout</h2>
+                    <p class="section-desc">Adjust placement and sizing of your custom jar image</p>
+                    <div class="slider-group spicy-slider">
+                        <div class="slider-header">
+                            <span><i class="fa-solid fa-magnifying-glass-plus"></i> Image Zoom</span>
+                            <span class="slider-val" id="val-zoom">100%</span>
+                        </div>
+                        <input type="range" id="slider-zoom" min="50" max="250" value="100">
+                    </div>
+                    <div class="slider-group sour-slider mt-3">
+                        <div class="slider-header">
+                            <span><i class="fa-solid fa-arrows-left-right"></i> Horizontal Position</span>
+                            <span class="slider-val" id="val-pan-x">0px</span>
+                        </div>
+                        <input type="range" id="slider-pan-x" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group earthy-slider mt-3">
+                        <div class="slider-header">
+                            <span><i class="fa-solid fa-arrows-up-down"></i> Vertical Position</span>
+                            <span class="slider-val" id="val-pan-y">0px</span>
+                        </div>
+                        <input type="range" id="slider-pan-y" min="-100" max="100" value="0">
+                    </div>
+                </div>
+
+
 
 
                 <!-- Section 6: Pricing Customizer -->
@@ -377,6 +484,13 @@
 
                 <!-- Export Toolbar -->
                 <div class="export-actions">
+                    <div class="checkbox-group" style="justify-content: center; margin-bottom: 12px; border-bottom: 1px dashed var(--panel-border); padding-bottom: 12px;">
+                        <label class="switch">
+                            <input type="checkbox" id="export-print-ready">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="export-print-ready" style="color: var(--gold-light); font-weight: 600; font-size: 0.8rem; cursor: pointer;">High-DPI Print Export (3x Size)</label>
+                    </div>
                     <button type="button" id="btn-download" class="btn-primary">
                         <i class="fa-solid fa-download"></i> Download Poster (PNG)
                     </button>
@@ -399,6 +513,23 @@
 
                     <!-- Watermark Pattern Background -->
                     <div class="poster-pattern"></div>
+
+                    <!-- Festival Decorative Garland & Ornaments -->
+                    <div class="festival-garland-overlay" id="preview-festival-overlay" style="display: none;">
+                        <div class="garland-left"></div>
+                        <div class="garland-top"></div>
+                        <div class="garland-right"></div>
+                        <div class="diya-left">🪔</div>
+                        <div class="diya-right">🪔</div>
+                    </div>
+
+                    <!-- Promo Campaign Discount Overlay -->
+                    <div class="promo-discount-overlay" id="preview-discount-overlay" style="display: none;">
+                        <div class="discount-inner">
+                            <span class="discount-title" id="preview-discount-title">BUY 1 GET 1 FREE</span>
+                            <span class="discount-subtitle" id="preview-discount-subtitle">Offer valid till Sunday only</span>
+                        </div>
+                    </div>
 
                     <!-- Flipkart Banner Layout Elements (Visible only in theme-flipkart-modern) -->
                     <div class="fk-brand-badge">Flipkart Unique</div>
@@ -440,6 +571,36 @@
                             <div class="image-container-wrapper">
                                 <div class="image-frame-shadow">
                                     <div class="image-promo-tag" id="preview-image-tag" style="display: none;"></div>
+                                    
+                                    <!-- Dynamic Marketing Stickers -->
+                                    <div class="sticker-wrapper" id="preview-stickers-container">
+                                        <div class="mkt-sticker sticker-bestseller" style="display: none;">
+                                            <div class="sticker-badge-gold">
+                                                <i class="fa-solid fa-crown"></i>
+                                                <span class="st-line1">BEST</span>
+                                                <span class="st-line2">SELLER</span>
+                                            </div>
+                                        </div>
+                                        <div class="mkt-sticker sticker-organic" style="display: none;">
+                                            <div class="sticker-badge-eco">
+                                                <i class="fa-solid fa-leaf"></i>
+                                                <span>100% ORGANIC</span>
+                                            </div>
+                                        </div>
+                                        <div class="mkt-sticker sticker-traditional" style="display: none;">
+                                            <div class="sticker-badge-heritage">
+                                                <i class="fa-solid fa-shield-halved"></i>
+                                                <span>ROYAL RECIPE</span>
+                                            </div>
+                                        </div>
+                                        <div class="mkt-sticker sticker-limited" style="display: none;">
+                                            <div class="sticker-badge-limited">
+                                                <i class="fa-solid fa-bolt"></i>
+                                                <span>LIMITED STOCK</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="poster-image-frame">
                                         <img id="poster-img" src="assets/images/ginger.png" alt="Pickle Preview">
                                     </div>
@@ -529,14 +690,21 @@
                             </div>
 
                             <div class="info-side-footer">
-                                <!-- Footer Contact Info -->
-                                <div class="poster-footer">
-                                    <div class="whatsapp-cta-button">
-                                        <i class="fa-brands fa-whatsapp"></i>
-                                        <div class="cta-text-wrapper">
-                                            <span class="cta-label" id="preview-whatsapp-cta">Order on WhatsApp</span>
-                                            <span class="cta-phone" id="preview-whatsapp-num">+91 70141012742</span>
+                                <div class="footer-layout-row">
+                                    <!-- Footer Contact Info -->
+                                    <div class="poster-footer">
+                                        <div class="whatsapp-cta-button">
+                                            <i class="fa-brands fa-whatsapp"></i>
+                                            <div class="cta-text-wrapper">
+                                                <span class="cta-label" id="preview-whatsapp-cta">Order on WhatsApp</span>
+                                                <span class="cta-phone" id="preview-whatsapp-num">+91 70141012742</span>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <!-- Dynamic Order QR Code -->
+                                    <div class="poster-qr-wrapper" id="preview-qr-container" style="display: none;">
+                                        <img id="preview-qr-code" src="" alt="Scan to Order">
+                                        <span class="qr-label">SCAN TO ORDER</span>
                                     </div>
                                 </div>
                                 <!-- Website Link -->
@@ -551,6 +719,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </main>

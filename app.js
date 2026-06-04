@@ -154,9 +154,35 @@ const presetButtons = document.querySelectorAll(".preset-btn");
 const posterCanvas = document.getElementById("poster-canvas");
 const posterImg = document.getElementById("poster-img");
 
+// Marketing & Pan/Zoom DOM elements
+const campaignModeSelect = document.getElementById("campaign-mode");
+const campaignTextInputs = document.getElementById("campaign-text-inputs");
+const festivalStyleInputs = document.getElementById("festival-style-inputs");
+const campaignTitleInput = document.getElementById("campaign-title");
+const campaignSubtitleInput = document.getElementById("campaign-subtitle");
+const festivalDecorationSelect = document.getElementById("festival-decoration");
+
+const previewDiscountOverlay = document.getElementById("preview-discount-overlay");
+const previewDiscountTitle = document.getElementById("preview-discount-title");
+const previewDiscountSubtitle = document.getElementById("preview-discount-subtitle");
+const previewFestivalOverlay = document.getElementById("preview-festival-overlay");
+
+const showQrCodeCheckbox = document.getElementById("show-qr-code");
+const previewQrContainer = document.getElementById("preview-qr-container");
+const previewQrCode = document.getElementById("preview-qr-code");
+
+const sliderZoom = document.getElementById("slider-zoom");
+const sliderPanX = document.getElementById("slider-pan-x");
+const sliderPanY = document.getElementById("slider-pan-y");
+
+const valZoom = document.getElementById("val-zoom");
+const valPanX = document.getElementById("val-pan-x");
+const valPanY = document.getElementById("val-pan-y");
+
 // Aspect Ratio
 const ratioOptions = document.getElementsByName("poster-ratio");
 const previewRatioLabel = document.getElementById("preview-ratio-label");
+
 
 // Themes
 const themeOptions = document.getElementsByName("poster-theme");
@@ -302,8 +328,116 @@ function updateSliderLabel(slider, labelEl) {
     }
 }
 
+// Image Crop Zoom & Pan Transform Update
+function updateImageTransform() {
+    if (!posterImg) return;
+    
+    const zoomVal = sliderZoom ? sliderZoom.value : 100;
+    const panXVal = sliderPanX ? sliderPanX.value : 0;
+    const panYVal = sliderPanY ? sliderPanY.value : 0;
+    
+    if (valZoom) valZoom.textContent = `${zoomVal}%`;
+    if (valPanX) valPanX.textContent = `${panXVal}px`;
+    if (valPanY) valPanY.textContent = `${panYVal}px`;
+    
+    posterImg.style.setProperty("--img-zoom", zoomVal / 100);
+    posterImg.style.setProperty("--img-pan-x", `${panXVal}px`);
+    posterImg.style.setProperty("--img-pan-y", `${panYVal}px`);
+}
+
+// Campaign Mode Layouts & Texts Sync
+function updateCampaignMode() {
+    const campaignMode = campaignModeSelect ? campaignModeSelect.value : "showcase";
+    
+    if (campaignTextInputs) {
+        campaignTextInputs.style.display = (campaignMode === "discount") ? "block" : "none";
+    }
+    if (festivalStyleInputs) {
+        festivalStyleInputs.style.display = (campaignMode === "festival") ? "block" : "none";
+    }
+    
+    if (previewDiscountOverlay) {
+        previewDiscountOverlay.style.display = (campaignMode === "discount") ? "flex" : "none";
+    }
+    if (previewFestivalOverlay) {
+        previewFestivalOverlay.style.display = (campaignMode === "festival") ? "block" : "none";
+        
+        if (campaignMode === "festival") {
+            const festTheme = festivalDecorationSelect ? festivalDecorationSelect.value : "marigold";
+            previewFestivalOverlay.className = "festival-garland-overlay";
+            previewFestivalOverlay.classList.add(`fest-theme-${festTheme}`);
+            
+            const garlandTop = previewFestivalOverlay.querySelector(".garland-top");
+            const garlandLeft = previewFestivalOverlay.querySelector(".garland-left");
+            const garlandRight = previewFestivalOverlay.querySelector(".garland-right");
+            const diyaLeft = previewFestivalOverlay.querySelector(".diya-left");
+            const diyaRight = previewFestivalOverlay.querySelector(".diya-right");
+            
+            if (festTheme === "diya") {
+                if (garlandTop) garlandTop.style.display = "none";
+                if (garlandLeft) garlandLeft.style.display = "none";
+                if (garlandRight) garlandRight.style.display = "none";
+                if (diyaLeft) { diyaLeft.style.display = "block"; diyaLeft.textContent = "🪔"; }
+                if (diyaRight) { diyaRight.style.display = "block"; diyaRight.textContent = "🪔"; }
+            } else if (festTheme === "mandala") {
+                if (garlandTop) garlandTop.style.display = "none";
+                if (garlandLeft) garlandLeft.style.display = "none";
+                if (garlandRight) garlandRight.style.display = "none";
+                if (diyaLeft) { diyaLeft.style.display = "block"; diyaLeft.textContent = "🌸"; }
+                if (diyaRight) { diyaRight.style.display = "block"; diyaRight.textContent = "🌸"; }
+            } else {
+                if (garlandTop) garlandTop.style.display = "block";
+                if (garlandLeft) garlandLeft.style.display = "block";
+                if (garlandRight) garlandRight.style.display = "block";
+                if (diyaLeft) { diyaLeft.style.display = "block"; diyaLeft.textContent = "🪔"; }
+                if (diyaRight) { diyaRight.style.display = "block"; diyaRight.textContent = "🪔"; }
+            }
+        }
+    }
+    
+    if (campaignTitleInput && previewDiscountTitle) {
+        previewDiscountTitle.textContent = campaignTitleInput.value.toUpperCase();
+    }
+    if (campaignSubtitleInput && previewDiscountSubtitle) {
+        previewDiscountSubtitle.textContent = campaignSubtitleInput.value;
+    }
+}
+
+// WhatsApp Dynamic QR Code Generation
+function updateQrCode() {
+    if (!showQrCodeCheckbox || !previewQrContainer || !previewQrCode) return;
+    
+    if (showQrCodeCheckbox.checked) {
+        previewQrContainer.style.display = "flex";
+        
+        const lockedWhatsappNum = "+91 70141012742";
+        const whatsappNumVal = whatsappNumInput ? whatsappNumInput.value : lockedWhatsappNum;
+        const cleanPhone = whatsappNumVal.replace(/[^0-9]/g, "");
+        
+        const activeName = (productNameInput ? productNameInput.value : "Achaar");
+        const waLink = `https://wa.me/${cleanPhone}?text=Hi!%20I%20want%20to%20order%20${encodeURIComponent(activeName)}.`;
+        
+        previewQrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(waLink)}`;
+    } else {
+        previewQrContainer.style.display = "none";
+    }
+}
+
+// Marketing Stickers Toggle Visibility
+function updateMarketingStickers() {
+    const stickersList = ["bestseller", "organic", "traditional", "limited"];
+    stickersList.forEach(sticker => {
+        const checkbox = document.getElementById(`sticker-${sticker}`);
+        const previewElement = document.querySelector(`.mkt-sticker.sticker-${sticker}`);
+        if (checkbox && previewElement) {
+            previewElement.style.display = checkbox.checked ? "block" : "none";
+        }
+    });
+}
+
 // Sync Form Inputs to Live Preview
 function syncPreview() {
+
     // Brand & Product Text
     if (previewBrandTitle && brandTitleInput) {
         previewBrandTitle.textContent = brandTitleInput.value.toUpperCase();
@@ -462,7 +596,14 @@ function syncPreview() {
     if (previewCaptionDesc && captionTrans) {
         previewCaptionDesc.textContent = captionTrans.captionDesc;
     }
+
+    // Sync new Marketing elements
+    updateImageTransform();
+    updateCampaignMode();
+    updateQrCode();
+    updateMarketingStickers();
 }
+
 
 // Handle Language selection change
 function handleLanguageChange() {
@@ -520,7 +661,7 @@ function updateRatio() {
 
     if (posterCanvas) {
         // Remove all ratio classes
-        posterCanvas.classList.remove("ratio-square", "ratio-landscape", "ratio-story");
+        posterCanvas.classList.remove("ratio-square", "ratio-landscape", "ratio-story", "ratio-print-banner", "ratio-flyer");
         posterCanvas.classList.add(`ratio-${selectedRatio}`);
     }
 
@@ -529,11 +670,16 @@ function updateRatio() {
             previewRatioLabel.textContent = "Live Banner Preview (16:9 Ratio)";
         } else if (selectedRatio === "story") {
             previewRatioLabel.textContent = "Live Story Preview (9:16 Ratio)";
+        } else if (selectedRatio === "print-banner") {
+            previewRatioLabel.textContent = "Live Print Banner Preview (3:2 Ratio)";
+        } else if (selectedRatio === "flyer") {
+            previewRatioLabel.textContent = "Live Flyer Preview (4:3 Ratio)";
         } else {
             previewRatioLabel.textContent = "Live Poster Preview (1:1 Ratio)";
         }
     }
 }
+
 
 // Update Theme Styling classes
 function updateTheme() {
@@ -627,12 +773,33 @@ function setupEventListeners() {
         imageTagTextInput, imageTagStyleSelect,
         price500gInput, price1kgInput,
         whatsappNumInput, whatsappCtaInput, websiteUrlInput,
-        fkSaleTitleInput, fkDiscountTextInput, fkCtaTextInput
+        fkSaleTitleInput, fkDiscountTextInput, fkCtaTextInput,
+        campaignTitleInput, campaignSubtitleInput
     ].filter(input => input !== null && input !== undefined);
     
     inputsToSync.forEach(input => {
         input.addEventListener("input", syncPreview);
     });
+
+    // Campaign Mode
+    if (campaignModeSelect) campaignModeSelect.addEventListener("change", () => {
+        updateCampaignMode();
+        updateQrCode();
+    });
+    if (festivalDecorationSelect) festivalDecorationSelect.addEventListener("change", updateCampaignMode);
+    if (showQrCodeCheckbox) showQrCodeCheckbox.addEventListener("change", updateQrCode);
+
+    // Marketing stickers checkboxes
+    const stickersList = ["bestseller", "organic", "traditional", "limited"];
+    stickersList.forEach(sticker => {
+        const checkbox = document.getElementById(`sticker-${sticker}`);
+        if (checkbox) checkbox.addEventListener("change", updateMarketingStickers);
+    });
+
+    // Image Zoom & Pan sliders
+    if (sliderZoom) sliderZoom.addEventListener("input", updateImageTransform);
+    if (sliderPanX) sliderPanX.addEventListener("input", updateImageTransform);
+    if (sliderPanY) sliderPanY.addEventListener("input", updateImageTransform);
 
     // Toggle Checks
     if (show500gCheckbox) show500gCheckbox.addEventListener("change", syncPreview);
@@ -696,10 +863,13 @@ function setupEventListeners() {
             const originalText = btnDownload.innerHTML;
             btnDownload.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Rendering Poster...`;
 
-            // We use html2canvas with scale 2 to get a high-quality double resolution image export
+            // Check if print-ready (High-DPI) is enabled
+            const isPrintReady = document.getElementById("export-print-ready")?.checked;
+            const exportScale = isPrintReady ? 3.5 : 2.0;
+
             html2canvas(posterCanvas, {
                 useCORS: true,
-                scale: 2,
+                scale: exportScale,
                 backgroundColor: null
             }).then(canvas => {
                 const dataUrl = canvas.toDataURL("image/png");
@@ -707,7 +877,16 @@ function setupEventListeners() {
                 // Create temporary link to fire download
                 const link = document.createElement("a");
                 const prodName = (productNameInput ? productNameInput.value : "mewari_achar").replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                const formatSuffix = (posterCanvas && posterCanvas.classList.contains("ratio-landscape")) ? "_banner" : "_square";
+                
+                // Determine format suffix
+                let formatSuffix = "_square";
+                if (posterCanvas) {
+                    if (posterCanvas.classList.contains("ratio-landscape")) formatSuffix = "_banner";
+                    else if (posterCanvas.classList.contains("ratio-story")) formatSuffix = "_story";
+                    else if (posterCanvas.classList.contains("ratio-print-banner")) formatSuffix = "_print_banner";
+                    else if (posterCanvas.classList.contains("ratio-flyer")) formatSuffix = "_flyer";
+                }
+                
                 link.download = `Mewari_Achar_Poster_${prodName}${formatSuffix}.png`;
                 link.href = dataUrl;
                 document.body.appendChild(link);
@@ -725,6 +904,7 @@ function setupEventListeners() {
             });
         });
     }
+
     // --- Add Custom Preset Operations ---
     const btnAddPreset = document.getElementById("btn-add-preset");
     const addPresetPanel = document.getElementById("add-preset-panel");
