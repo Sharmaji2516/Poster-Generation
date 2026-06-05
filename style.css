@@ -107,16 +107,18 @@ body {
 /* Form Sections */
 .form-section {
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.15); /* Distinct semi-transparent white border to package as a box */
     border-radius: 12px;
     padding: 18px;
     margin-bottom: 20px;
     transition: var(--transition-smooth);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .form-section:hover {
-    border-color: rgba(197, 168, 128, 0.2);
-    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.35); /* Brighter white border on hover */
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
 .form-section h2 {
@@ -1142,16 +1144,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Pricing row in Poster */
 .poster-prices-row {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: stretch;
     margin-bottom: 12px;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .ratio-landscape .poster-prices-row {
     margin-bottom: 8px;
-    gap: 10px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .poster-price-card {
@@ -2372,7 +2376,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Image zoom/pan adjustments */
 .poster-image-frame img {
-    transform: scale(var(--img-zoom, 1)) translate(var(--img-pan-x, 0px), var(--img-pan-y, 0px));
+    transform: translate(var(--img-pan-x, 0px), var(--img-pan-y, 0px)) scale(var(--img-zoom, 1));
     transform-origin: center center;
     transition: transform 0.05s ease-out;
 }
@@ -2401,8 +2405,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Sticker 1: Best Seller Gold Seal */
 .sticker-bestseller {
-    top: -12px;
-    right: -12px;
     width: 70px;
     height: 70px;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
@@ -2439,8 +2441,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Sticker 2: 100% Organic Eco Capsule */
 .sticker-organic {
-    bottom: 10px;
-    left: -8px;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 .sticker-badge-eco {
@@ -2463,8 +2463,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Sticker 3: Royal Recipe Shield */
 .sticker-traditional {
-    top: -8px;
-    left: -8px;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
 }
 .sticker-badge-heritage {
@@ -2488,8 +2486,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Sticker 4: Limited Stock Banner */
 .sticker-limited {
-    bottom: 10px;
-    right: -8px;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 .sticker-badge-limited {
@@ -2604,148 +2600,91 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Promo Discount Campaign Overlay */
 .promo-discount-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-4deg);
+    top: 35px;
+    left: 35px;
+    transform: rotate(-8deg);
     z-index: 9;
-    width: 85%;
-    max-width: 440px;
-    background: linear-gradient(135deg, #d35400 0%, #b03a2e 50%, #7b241c 100%);
-    border: 3px double var(--gold-primary);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(211, 84, 0, 0.2);
-    border-radius: 12px;
-    padding: 16px 20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #e74c3c 0%, #c0392b 60%, #962d22 100%); /* Crimson red seal */
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
     text-align: center;
     pointer-events: none;
-    animation: promo-appear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: promo-appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes promo-appear {
-    from { transform: translate(-50%, -50%) scale(0.7) rotate(0deg); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1) rotate(-4deg); opacity: 1; }
+    from { transform: scale(0.5) rotate(0deg); opacity: 0; }
+    to { transform: scale(1) rotate(-8deg); opacity: 1; }
 }
 
 .discount-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 3px;
+    width: 100%;
 }
 
 .discount-title {
-    font-family: 'Rubik', sans-serif;
-    font-size: 1.85rem;
-    font-weight: 900;
-    color: #ffe000; /* Vibrant Sale Yellow */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    letter-spacing: 1px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffe000; /* Vibrant Yellow text on red seal */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    line-height: 1.25;
     text-transform: uppercase;
 }
 
 .discount-subtitle {
     font-family: 'Outfit', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.5rem;
     font-weight: 600;
     color: #ffffff;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+    line-height: 1.2;
+    margin-top: 2px;
 }
 
 /* Adjust overlay sizing for different ratios */
 .ratio-story .promo-discount-overlay {
-    width: 90%;
-    padding: 12px 14px;
+    width: 105px;
+    height: 105px;
+    top: 25px;
+    left: 25px;
+    padding: 8px;
 }
 .ratio-story .discount-title {
-    font-size: 1.4rem;
+    font-size: 0.72rem;
 }
 .ratio-story .discount-subtitle {
-    font-size: 0.72rem;
+    font-size: 0.45rem;
 }
 
 .ratio-landscape .promo-discount-overlay {
-    width: 60%;
-    padding: 12px 16px;
-}
-.ratio-landscape .discount-title {
-    font-size: 1.6rem;
+    top: 40px;
+    left: 45px;
 }
 
-/* Festival Garland Overlay */
-.festival-garland-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 7;
-    pointer-events: none;
+.ratio-print-banner .promo-discount-overlay {
+    top: 40px;
+    left: 45px;
 }
 
-/* Garland Strings */
-.festival-garland-overlay .garland-top {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    height: 25px;
-    background-image: radial-gradient(circle, #ff9f43 6px, #ee5253 7px, transparent 8px);
-    background-size: 16px 16px;
-    background-repeat: repeat-x;
-    opacity: 0.95;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+.ratio-flyer .promo-discount-overlay {
+    top: 35px;
+    left: 35px;
 }
 
-.festival-garland-overlay .garland-left {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    bottom: 8px;
-    width: 25px;
-    background-image: radial-gradient(circle, #ff9f43 6px, #ee5253 7px, transparent 8px);
-    background-size: 16px 16px;
-    background-repeat: repeat-y;
-    opacity: 0.85;
-}
 
-.festival-garland-overlay .garland-right {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    bottom: 8px;
-    width: 25px;
-    background-image: radial-gradient(circle, #ff9f43 6px, #ee5253 7px, transparent 8px);
-    background-size: 16px 16px;
-    background-repeat: repeat-y;
-    opacity: 0.85;
-}
 
-/* Oil Lamps (Diyas) */
-.festival-garland-overlay .diya-left,
-.festival-garland-overlay .diya-right {
-    position: absolute;
-    bottom: 25px;
-    font-size: 26px;
-    line-height: 1;
-    filter: drop-shadow(0 2px 8px rgba(251,146,60,0.5));
-    animation: diya-flicker 1.5s infinite alternate;
-}
 
-.festival-garland-overlay .diya-left {
-    left: 20px;
-}
-
-.festival-garland-overlay .diya-right {
-    right: 20px;
-}
-
-@keyframes diya-flicker {
-    0% { transform: scale(1); filter: drop-shadow(0 2px 4px rgba(251,146,60,0.4)); }
-    100% { transform: scale(1.08); filter: drop-shadow(0 4px 10px rgba(251,146,60,0.7)); }
-}
-
-/* Sizing overrides for landscape */
-.ratio-landscape .festival-garland-overlay .diya-left { left: 40px; }
-.ratio-landscape .festival-garland-overlay .diya-right { right: 40px; }
 
 

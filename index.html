@@ -96,6 +96,16 @@
                         </div>
                         <div class="input-row">
                             <div class="input-group">
+                                <label for="new-preset-price100g">Price 100g</label>
+                                <input type="number" id="new-preset-price100g" value="70">
+                            </div>
+                            <div class="input-group">
+                                <label for="new-preset-price250g">Price 250g</label>
+                                <input type="number" id="new-preset-price250g" value="150">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
                                 <label for="new-preset-price500g">Price 500g</label>
                                 <input type="number" id="new-preset-price500g" value="250">
                             </div>
@@ -339,13 +349,12 @@
                 <!-- Section 5B: Marketing & Campaigns -->
                 <div class="form-section">
                     <h2><span class="step-num">5B</span> Marketing & Campaigns</h2>
-                    <p class="section-desc">Overlay custom banners and festive themes on the poster</p>
+                    <p class="section-desc">Overlay custom discount banners on the poster</p>
                     <div class="input-group">
                         <label for="campaign-mode">Campaign Mode</label>
                         <select id="campaign-mode">
                             <option value="showcase" selected>Product Showcase (Default)</option>
                             <option value="discount">Discount Offer Overlay</option>
-                            <option value="festival">Festive Greeting Mode</option>
                         </select>
                     </div>
                     <div id="campaign-text-inputs" style="display: none; margin-top: 10px;">
@@ -358,75 +367,93 @@
                             <input type="text" id="campaign-subtitle" value="Offer valid till Sunday only" placeholder="e.g. Free shipping on orders above ₹500">
                         </div>
                     </div>
-                    <div id="festival-style-inputs" style="display: none; margin-top: 10px;">
-                        <div class="input-group">
-                            <label for="festival-decoration">Festive Overlay Theme</label>
-                            <select id="festival-decoration">
-                                <option value="marigold">Traditional Marigold Garland</option>
-                                <option value="diya">Diwali Diya Lamps</option>
-                                <option value="mandala">Auspicious Mandala Borders</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="checkbox-group mt-3">
+                    <div class="checkbox-group mt-3" style="margin-bottom: 0;">
                         <label class="switch">
                             <input type="checkbox" id="show-qr-code">
                             <span class="slider round"></span>
                         </label>
                         <label for="show-qr-code">Include WhatsApp Order QR Code</label>
                     </div>
+
+                    <!-- Discount Overlay Adjustments nested inside Section 5B -->
+                    <div id="overlay-adjustments-section" style="display: none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                        <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-bottom: 12px; color: var(--gold-primary);"><i class="fa-solid fa-arrows-to-dot"></i> Adjust Discount Overlay</h3>
+                        <div class="slider-group spicy-slider">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-arrows-left-right"></i> Horizontal Position (X)</span>
+                                <span class="slider-val" id="val-overlay-x">35px</span>
+                            </div>
+                            <input type="range" id="slider-overlay-x" min="0" max="600" value="35">
+                        </div>
+                        <div class="slider-group sour-slider mt-3">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-arrows-up-down"></i> Vertical Position (Y)</span>
+                                <span class="slider-val" id="val-overlay-y">35px</span>
+                            </div>
+                            <input type="range" id="slider-overlay-y" min="0" max="600" value="35">
+                        </div>
+                        <div class="slider-group earthy-slider mt-3">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-magnifying-glass-plus"></i> Badge Size</span>
+                                <span class="slider-val" id="val-overlay-scale">100%</span>
+                            </div>
+                            <input type="range" id="slider-overlay-scale" min="50" max="200" value="100">
+                        </div>
+                        <div class="slider-group strong-slider mt-3">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-rotate"></i> Badge Rotation</span>
+                                <span class="slider-val" id="val-overlay-rotate">-8°</span>
+                            </div>
+                            <input type="range" id="slider-overlay-rotate" min="-180" max="180" value="-8">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Section 5C: Promotional Badges & Seals -->
                 <div class="form-section">
                     <h2><span class="step-num">5C</span> Marketing Badges</h2>
-                    <p class="section-desc">Toggle premium badges to overlay on the product image side</p>
-                    <div class="ratio-selector" style="grid-template-columns: repeat(2, 1fr); gap: 10px; cursor: pointer;">
-                        <label class="checkbox-group">
-                            <input type="checkbox" id="sticker-bestseller">
-                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">🔥 Best Seller Seal</span>
-                        </label>
-                        <label class="checkbox-group">
-                            <input type="checkbox" id="sticker-organic">
-                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">🌿 100% Organic</span>
-                        </label>
-                        <label class="checkbox-group">
-                            <input type="checkbox" id="sticker-traditional">
-                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">👑 Royal Heritage</span>
-                        </label>
-                        <label class="checkbox-group">
-                            <input type="checkbox" id="sticker-limited">
-                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: 500;">⚡ Limited Stock</span>
-                        </label>
+                    <p class="section-desc">Add, toggle, and position badges on the product image side</p>
+                    
+                    <!-- Dynamic badges control list will be rendered here by JS -->
+                    <div id="badges-controls-list" style="margin-bottom: 16px;"></div>
+
+                    <!-- Button to open "Add Custom Badge" panel -->
+                    <button type="button" id="btn-add-badge" class="btn-secondary" style="width: 100%; padding: 10px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-plus-circle"></i> Add Custom Badge
+                    </button>
+
+                    <!-- Add Custom Badge Sub-panel -->
+                    <div id="add-badge-panel" class="collapsible-panel mt-3" style="display: none; border: 1px dashed var(--gold-primary); padding: 14px; border-radius: 8px;">
+                        <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-bottom: 12px; color: var(--gold-light);">Create Custom Badge</h3>
+                        <div class="input-group">
+                            <label for="new-badge-text">Badge Text</label>
+                            <input type="text" id="new-badge-text" placeholder="e.g. Handmade">
+                        </div>
+                        <div class="input-group">
+                            <label for="new-badge-emoji">Emoji</label>
+                            <input type="text" id="new-badge-emoji" placeholder="e.g. 🏺">
+                        </div>
+                        <div class="input-group">
+                            <label for="new-badge-style-theme">Style Theme</label>
+                            <select id="new-badge-style-theme">
+                                <option value="gold">Gold Seal (Classic)</option>
+                                <option value="eco">Eco Green (Capsule)</option>
+                                <option value="heritage">Heritage Red (Shield)</option>
+                                <option value="limited">Vibrant Orange (Rectangle)</option>
+                            </select>
+                        </div>
+                        <div class="panel-actions mt-3">
+                            <button type="button" id="btn-save-badge" class="btn-save" style="font-size: 0.75rem; padding: 6px 12px;">
+                                <i class="fa-solid fa-check"></i> Save Badge
+                            </button>
+                            <button type="button" id="btn-cancel-badge" class="btn-cancel" style="font-size: 0.75rem; padding: 6px 12px;">
+                                <i class="fa-solid fa-xmark"></i> Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Section 5D: Image Adjustments (Zoom & Pan) -->
-                <div class="form-section">
-                    <h2><span class="step-num">5D</span> Adjust Image Layout</h2>
-                    <p class="section-desc">Adjust placement and sizing of your custom jar image</p>
-                    <div class="slider-group spicy-slider">
-                        <div class="slider-header">
-                            <span><i class="fa-solid fa-magnifying-glass-plus"></i> Image Zoom</span>
-                            <span class="slider-val" id="val-zoom">100%</span>
-                        </div>
-                        <input type="range" id="slider-zoom" min="50" max="250" value="100">
-                    </div>
-                    <div class="slider-group sour-slider mt-3">
-                        <div class="slider-header">
-                            <span><i class="fa-solid fa-arrows-left-right"></i> Horizontal Position</span>
-                            <span class="slider-val" id="val-pan-x">0px</span>
-                        </div>
-                        <input type="range" id="slider-pan-x" min="-100" max="100" value="0">
-                    </div>
-                    <div class="slider-group earthy-slider mt-3">
-                        <div class="slider-header">
-                            <span><i class="fa-solid fa-arrows-up-down"></i> Vertical Position</span>
-                            <span class="slider-val" id="val-pan-y">0px</span>
-                        </div>
-                        <input type="range" id="slider-pan-y" min="-100" max="100" value="0">
-                    </div>
-                </div>
+                <!-- Sliders for image crop adjustments and discount overlay adjustments have been nested under Sections 7 and 5B respectively -->
 
 
 
@@ -434,18 +461,66 @@
                 <!-- Section 6: Pricing Customizer -->
                 <div class="form-section">
                     <h2><span class="step-num">6</span> Pricing Customization</h2>
+                    <p class="section-desc">Toggle and customize prices/labels for jar sizes</p>
+                    
+                    <!-- 100g Size -->
                     <div class="checkbox-group">
+                        <label class="switch">
+                            <input type="checkbox" id="show-100g">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="show-100g">Show 100g Jar Price</label>
+                    </div>
+                    <div class="input-row price-input-row" id="price-100g-group" style="display: none; margin-bottom: 12px;">
+                        <div class="input-group">
+                            <label for="label-100g">Label</label>
+                            <input type="text" id="label-100g" value="100g Jar">
+                        </div>
+                        <div class="input-group">
+                            <label for="price-100g">Price (₹)</label>
+                            <input type="number" id="price-100g" value="80">
+                        </div>
+                    </div>
+
+                    <!-- 250g Size -->
+                    <div class="checkbox-group mt-3">
+                        <label class="switch">
+                            <input type="checkbox" id="show-250g">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="show-250g">Show 250g Jar Price</label>
+                    </div>
+                    <div class="input-row price-input-row" id="price-250g-group" style="display: none; margin-bottom: 12px;">
+                        <div class="input-group">
+                            <label for="label-250g">Label</label>
+                            <input type="text" id="label-250g" value="250g Jar">
+                        </div>
+                        <div class="input-group">
+                            <label for="price-250g">Price (₹)</label>
+                            <input type="number" id="price-250g" value="150">
+                        </div>
+                    </div>
+
+                    <!-- 500g Size -->
+                    <div class="checkbox-group mt-3">
                         <label class="switch">
                             <input type="checkbox" id="show-500g" checked>
                             <span class="slider round"></span>
                         </label>
                         <label for="show-500g">Show 500g Jar Price</label>
                     </div>
-                    <div class="input-group price-input" id="price-500g-group">
-                        <label for="price-500g">500g Jar Price (₹)</label>
-                        <input type="number" id="price-500g" value="290">
+                    <div class="input-row price-input-row" id="price-500g-group" style="margin-bottom: 12px;">
+                        <div class="input-group">
+                            <label for="label-500g">Label</label>
+                            <input type="text" id="label-500g" value="500g Jar">
+                        </div>
+                        <div class="input-group">
+                            <label for="price-500g">Price (₹)</label>
+                            <input type="number" id="price-500g" value="290">
+                        </div>
                     </div>
 
+                    <!-- 1kg Size -->
                     <div class="checkbox-group mt-3">
                         <label class="switch">
                             <input type="checkbox" id="show-1kg" checked>
@@ -453,9 +528,15 @@
                         </label>
                         <label for="show-1kg">Show 1kg Jar Price</label>
                     </div>
-                    <div class="input-group price-input" id="price-1kg-group">
-                        <label for="price-1kg">1kg Jar Price (₹)</label>
-                        <input type="number" id="price-1kg" value="579">
+                    <div class="input-row price-input-row" id="price-1kg-group" style="margin-bottom: 12px;">
+                        <div class="input-group">
+                            <label for="label-1kg">Label</label>
+                            <input type="text" id="label-1kg" value="1kg Jar">
+                        </div>
+                        <div class="input-group">
+                            <label for="price-1kg">Price (₹)</label>
+                            <input type="number" id="price-1kg" value="579">
+                        </div>
                     </div>
                 </div>
 
@@ -470,13 +551,39 @@
                         </div>
                         <div id="logo-name-display" class="file-name">Using Royal Crest Logo</div>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group" style="margin-bottom: 0;">
                         <label for="custom-image">Upload Custom Product Image</label>
                         <div class="file-upload-btn">
                             <input type="file" id="custom-image" accept="image/*">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Choose Product Image
                         </div>
                         <div id="file-name-display" class="file-name">No custom file chosen</div>
+                    </div>
+
+                    <!-- Custom Product Image zoom/pan adjustments nested inside Section 7 -->
+                    <div id="image-adjustments-subpanel" style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                        <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-bottom: 12px; color: var(--gold-primary);"><i class="fa-solid fa-crop-simple"></i> Adjust Image Layout</h3>
+                        <div class="slider-group spicy-slider">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-magnifying-glass-plus"></i> Image Zoom</span>
+                                <span class="slider-val" id="val-zoom">100%</span>
+                            </div>
+                            <input type="range" id="slider-zoom" min="100" max="250" value="100">
+                        </div>
+                        <div class="slider-group sour-slider mt-3">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-arrows-left-right"></i> Horizontal Position</span>
+                                <span class="slider-val" id="val-pan-x">0px</span>
+                            </div>
+                            <input type="range" id="slider-pan-x" min="-100" max="100" value="0">
+                        </div>
+                        <div class="slider-group earthy-slider mt-3">
+                            <div class="slider-header">
+                                <span><i class="fa-solid fa-arrows-up-down"></i> Vertical Position</span>
+                                <span class="slider-val" id="val-pan-y">0px</span>
+                            </div>
+                            <input type="range" id="slider-pan-y" min="-100" max="100" value="0">
+                        </div>
                     </div>
                 </div>
 
@@ -514,14 +621,7 @@
                     <!-- Watermark Pattern Background -->
                     <div class="poster-pattern"></div>
 
-                    <!-- Festival Decorative Garland & Ornaments -->
-                    <div class="festival-garland-overlay" id="preview-festival-overlay" style="display: none;">
-                        <div class="garland-left"></div>
-                        <div class="garland-top"></div>
-                        <div class="garland-right"></div>
-                        <div class="diya-left">🪔</div>
-                        <div class="diya-right">🪔</div>
-                    </div>
+
 
                     <!-- Promo Campaign Discount Overlay -->
                     <div class="promo-discount-overlay" id="preview-discount-overlay" style="display: none;">
@@ -545,60 +645,13 @@
                         <!-- Image Side -->
                         <div class="poster-image-side">
                             <!-- Royal Saffron Mandala Ornament -->
-                            <div class="image-bg-ornament">
-                                <svg viewBox="0 0 100 100" class="mandala-svg">
-                                    <circle cx="50" cy="50" r="48" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.3"/>
-                                    <circle cx="50" cy="50" r="42" fill="none" stroke="var(--gold-primary)" stroke-width="0.8" stroke-dasharray="1 2" opacity="0.4"/>
-                                    <circle cx="50" cy="50" r="35" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.3"/>
-                                    <g stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.4">
-                                        <path d="M50,2 L50,98 M2,50 L98,50 M16,16 L84,84 M16,84 L84,16" />
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(0 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(30 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(60 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(90 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(120 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(150 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(180 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(210 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(240 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(270 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(300 50 50)"/>
-                                        <path d="M50,5 C40,25 60,25 50,5 Z" transform="rotate(330 50 50)"/>
-                                    </g>
-                                    <circle cx="50" cy="50" r="15" fill="none" stroke="var(--gold-primary)" stroke-width="0.8" opacity="0.5"/>
-                                </svg>
-                            </div>
                             <div class="image-container-wrapper">
                                 <div class="image-frame-shadow">
                                     <div class="image-promo-tag" id="preview-image-tag" style="display: none;"></div>
                                     
                                     <!-- Dynamic Marketing Stickers -->
                                     <div class="sticker-wrapper" id="preview-stickers-container">
-                                        <div class="mkt-sticker sticker-bestseller" style="display: none;">
-                                            <div class="sticker-badge-gold">
-                                                <i class="fa-solid fa-crown"></i>
-                                                <span class="st-line1">BEST</span>
-                                                <span class="st-line2">SELLER</span>
-                                            </div>
-                                        </div>
-                                        <div class="mkt-sticker sticker-organic" style="display: none;">
-                                            <div class="sticker-badge-eco">
-                                                <i class="fa-solid fa-leaf"></i>
-                                                <span>100% ORGANIC</span>
-                                            </div>
-                                        </div>
-                                        <div class="mkt-sticker sticker-traditional" style="display: none;">
-                                            <div class="sticker-badge-heritage">
-                                                <i class="fa-solid fa-shield-halved"></i>
-                                                <span>ROYAL RECIPE</span>
-                                            </div>
-                                        </div>
-                                        <div class="mkt-sticker sticker-limited" style="display: none;">
-                                            <div class="sticker-badge-limited">
-                                                <i class="fa-solid fa-bolt"></i>
-                                                <span>LIMITED STOCK</span>
-                                            </div>
-                                        </div>
+                                        <!-- Dynamic badges will be rendered here by JS -->
                                     </div>
                                     
                                     <div class="poster-image-frame">
@@ -673,20 +726,28 @@
                                     </div>
                                 </div>
 
-                                <!-- Prices & Promo Badge -->
-                                <div class="poster-prices-row">
-                                    <div class="poster-price-card" id="price-card-500g">
-                                        <span class="size-label">500g Jar</span>
-                                        <span class="price-value" id="preview-price-500g">₹290</span>
-                                    </div>
-                                    <div class="poster-price-card" id="price-card-1kg">
-                                        <span class="size-label">1kg Jar</span>
-                                        <span class="price-value" id="preview-price-1kg">₹579</span>
-                                    </div>
-                                    <div class="poster-promo-badge" id="preview-promo-badge">
-                                        <div class="badge-content">100% Homemade</div>
-                                    </div>
-                                </div>
+                                 <!-- Prices & Promo Badge -->
+                                 <div class="poster-prices-row">
+                                     <div class="poster-price-card" id="price-card-100g" style="display: none;">
+                                         <span class="size-label">100g Jar</span>
+                                         <span class="price-value" id="preview-price-100g">₹80</span>
+                                     </div>
+                                     <div class="poster-price-card" id="price-card-250g" style="display: none;">
+                                         <span class="size-label">250g Jar</span>
+                                         <span class="price-value" id="preview-price-250g">₹150</span>
+                                     </div>
+                                     <div class="poster-price-card" id="price-card-500g">
+                                         <span class="size-label">500g Jar</span>
+                                         <span class="price-value" id="preview-price-500g">₹290</span>
+                                     </div>
+                                     <div class="poster-price-card" id="price-card-1kg">
+                                         <span class="size-label">1kg Jar</span>
+                                         <span class="price-value" id="preview-price-1kg">₹579</span>
+                                     </div>
+                                     <div class="poster-promo-badge" id="preview-promo-badge">
+                                         <div class="badge-content">100% Homemade</div>
+                                     </div>
+                                 </div>
                             </div>
 
                             <div class="info-side-footer">
