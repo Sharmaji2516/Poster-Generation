@@ -1719,4 +1719,70 @@ function setupEventListeners() {
             saveState();
         });
     }
+
+    // Clear All Selections Action
+    const btnClearAll = document.getElementById("btn-clear-all");
+    if (btnClearAll) {
+        btnClearAll.addEventListener("click", clearAllSelections);
+    }
+}
+
+// Clear all inputs, sizes, checkboxes, and active badges to provide a fresh canvas
+function clearAllSelections() {
+    // 1. Uncheck all badge selections
+    badges.forEach(badge => {
+        badge.show = false;
+    });
+    
+    // 2. Uncheck all price sizes
+    const sizeCheckboxes = ["show-100g", "show-250g", "show-500g", "show-1kg"];
+    sizeCheckboxes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.checked = false;
+    });
+
+    // 3. Uncheck QR code
+    if (showQrCodeCheckbox) showQrCodeCheckbox.checked = false;
+
+    // 4. Clear text customizer inputs
+    const textInputs = [
+        "brand-title", "product-name", "product-desc",
+        "badge-text", "image-tag-text",
+        "campaign-title", "campaign-subtitle",
+        "fk-sale-title", "fk-discount-text", "fk-cta-text"
+    ];
+    textInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+
+    // 5. Reset selects
+    if (campaignModeSelect) campaignModeSelect.value = "showcase";
+    if (badgeStyleSelect) badgeStyleSelect.value = "classic";
+    if (imageTagStyleSelect) imageTagStyleSelect.value = "modern-ribbon";
+
+    // 6. Reset layout sliders to standard defaults
+    if (sliderZoom) sliderZoom.value = 100;
+    if (sliderPanX) sliderPanX.value = 0;
+    if (sliderPanY) sliderPanY.value = 0;
+    
+    const sliderOverlayX = document.getElementById("slider-overlay-x");
+    const sliderOverlayY = document.getElementById("slider-overlay-y");
+    const sliderOverlayScale = document.getElementById("slider-overlay-scale");
+    const sliderOverlayRotate = document.getElementById("slider-overlay-rotate");
+    if (sliderOverlayX) sliderOverlayX.value = 35;
+    if (sliderOverlayY) sliderOverlayY.value = 35;
+    if (sliderOverlayScale) sliderOverlayScale.value = 100;
+    if (sliderOverlayRotate) sliderOverlayRotate.value = -8;
+
+    // 7. Reset taste meters (sliders) to 0
+    const tasteSliders = [sliderSpicy, sliderSour, sliderEarthy, sliderStrong];
+    tasteSliders.forEach(slider => {
+        if (slider) slider.value = 0;
+    });
+
+    // 8. Refresh sidebar controls list, preview canvas, and localStorage
+    renderBadgesControls();
+    syncPreview();
+    saveState();
 }
