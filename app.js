@@ -164,6 +164,10 @@ let currentLanguage = "hinglish";
 
 // --- Marketing Badges Array (Built-in + Custom) ---
 let badges = [
+    { id: "flat60", type: "built-in", name: "💥 Flat 60% OFF", style: "glossy-pink", text: "60% OFF", emoji: "💥", show: true, x: 185, y: -8, scale: 100 },
+    { id: "spinwin", type: "built-in", name: "🎯 Spin & Win Offer", style: "neon-glow", text: "SPIN & WIN", emoji: "🎯", show: true, x: -15, y: -8, scale: 100 },
+    { id: "buy1get1", type: "built-in", name: "🎁 Buy 1 Get 1 Free", style: "golden-ticket", text: "BUY 1 GET 1", emoji: "🎁", show: false, x: -15, y: 215, scale: 100 },
+    { id: "freeshipping", type: "built-in", name: "🚚 Free Shipping", style: "glassy-purple", text: "FREE SHIPPING", emoji: "🚚", show: false, x: 185, y: 215, scale: 100 },
     { id: "bestseller", type: "built-in", name: "🔥 Best Seller Seal", style: "gold", text: "BEST SELLER", emoji: "👑", show: false, x: 212, y: -12, scale: 100 },
     { id: "organic", type: "built-in", name: "🌿 100% Organic", style: "eco", text: "100% ORGANIC", emoji: "🌿", show: false, x: -8, y: 230, scale: 100 },
     { id: "traditional", type: "built-in", name: "👑 Royal Heritage", style: "heritage", text: "ROYAL RECIPE", emoji: "🛡️", show: false, x: -8, y: -8, scale: 100 },
@@ -446,7 +450,28 @@ function loadState() {
 
         // 1. Restore Custom Presets
         if (state.badges) {
-            badges = state.badges;
+            const savedBadges = state.badges;
+            const defaultBadges = [
+                { id: "flat60", type: "built-in", name: "💥 Flat 60% OFF", style: "glossy-pink", text: "60% OFF", emoji: "💥", show: true, x: 185, y: -8, scale: 100 },
+                { id: "spinwin", type: "built-in", name: "🎯 Spin & Win Offer", style: "neon-glow", text: "SPIN & WIN", emoji: "🎯", show: true, x: -15, y: -8, scale: 100 },
+                { id: "buy1get1", type: "built-in", name: "🎁 Buy 1 Get 1 Free", style: "golden-ticket", text: "BUY 1 GET 1", emoji: "🎁", show: false, x: -15, y: 215, scale: 100 },
+                { id: "freeshipping", type: "built-in", name: "🚚 Free Shipping", style: "glassy-purple", text: "FREE SHIPPING", emoji: "🚚", show: false, x: 185, y: 215, scale: 100 },
+                { id: "bestseller", type: "built-in", name: "🔥 Best Seller Seal", style: "gold", text: "BEST SELLER", emoji: "👑", show: false, x: 212, y: -12, scale: 100 },
+                { id: "organic", type: "built-in", name: "🌿 100% Organic", style: "eco", text: "100% ORGANIC", emoji: "🌿", show: false, x: -8, y: 230, scale: 100 },
+                { id: "traditional", type: "built-in", name: "👑 Royal Heritage", style: "heritage", text: "ROYAL RECIPE", emoji: "🛡️", show: false, x: -8, y: -8, scale: 100 },
+                { id: "limited", type: "built-in", name: "⚡ Limited Stock", style: "limited", text: "LIMITED STOCK", emoji: "⚡", show: false, x: 212, y: 230, scale: 100 },
+                { id: "homemade", type: "built-in", name: "❤️ Homemade Taste", style: "heritage", text: "HOMEMADE TASTE", emoji: "❤️", show: false, x: 50, y: 50, scale: 100 },
+                { id: "pureveg", type: "built-in", name: "🌱 Pure Veg", style: "eco", text: "100% PURE VEG", emoji: "🟢", show: false, x: 50, y: 150, scale: 100 },
+                { id: "premium", type: "built-in", name: "💎 Premium Quality", style: "gold", text: "PREMIUM QUALITY", emoji: "💎", show: false, x: 150, y: 50, scale: 100 }
+            ];
+            
+            const merged = [...savedBadges];
+            defaultBadges.forEach(db => {
+                if (!merged.some(b => b.id === db.id)) {
+                    merged.push(db);
+                }
+            });
+            badges = merged;
         }
 
         if (state.customPresets) {
@@ -519,10 +544,7 @@ function loadState() {
             }
         }
 
-        // 3b. Restore Marketing Badges
-        if (state.badges) {
-            badges = state.badges;
-        }
+
 
         // 4. Restore Form Values
         if (state.formValues) {
@@ -966,6 +988,34 @@ function renderBadgesPreview() {
             stickerDiv.innerHTML = `
                 <div class="sticker-badge-limited">
                     <span style="font-size: 10px; margin-right: 2px;">${badge.emoji}</span>
+                    <span>${badge.text}</span>
+                </div>
+            `;
+        } else if (badge.style === "glossy-pink") {
+            stickerDiv.innerHTML = `
+                <div class="sticker-badge-glossy-pink">
+                    <span style="font-size: 10px; margin-right: 3px;">${badge.emoji}</span>
+                    <span>${badge.text}</span>
+                </div>
+            `;
+        } else if (badge.style === "neon-glow") {
+            stickerDiv.innerHTML = `
+                <div class="sticker-badge-neon-glow">
+                    <span style="font-size: 10px; margin-right: 3px;">${badge.emoji}</span>
+                    <span>${badge.text}</span>
+                </div>
+            `;
+        } else if (badge.style === "golden-ticket") {
+            stickerDiv.innerHTML = `
+                <div class="sticker-badge-golden-ticket">
+                    <span style="font-size: 11px; margin-bottom: 2px;">${badge.emoji}</span>
+                    <span>${badge.text}</span>
+                </div>
+            `;
+        } else if (badge.style === "glassy-purple") {
+            stickerDiv.innerHTML = `
+                <div class="sticker-badge-glassy-purple">
+                    <span style="font-size: 10px; margin-right: 3px;">${badge.emoji}</span>
                     <span>${badge.text}</span>
                 </div>
             `;
