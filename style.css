@@ -153,6 +153,42 @@ body {
     margin-bottom: 15px;
 }
 
+/* Section Header & Localized Clear Buttons */
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header-row h2 {
+    margin-bottom: 0 !important;
+}
+
+.btn-section-clear {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-section-clear:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.25);
+}
+
 /* Preset Picker Grid */
 .product-selector-grid {
     display: grid;
@@ -161,6 +197,7 @@ body {
 }
 
 .preset-btn {
+    position: relative;
     background: transparent;
     border: 2px solid transparent;
     border-radius: 8px;
@@ -171,6 +208,59 @@ body {
     gap: 6px;
     padding: 6px;
     transition: var(--transition-smooth);
+}
+
+/* Delete button for custom presets */
+.btn-delete-preset {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: rgba(239, 68, 68, 0.85);
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-delete-preset:hover {
+    background: #ef4444;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.btn-delete-preset i {
+    pointer-events: none;
+}
+
+/* Delete button for custom badges */
+.btn-delete-badge {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-delete-badge:hover {
+    background: rgba(239, 68, 68, 0.25) !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.3) !important;
 }
 
 .thumb-container {

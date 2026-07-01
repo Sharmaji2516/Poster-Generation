@@ -1,0 +1,301 @@
+/* --- Label Generator Styles --- */
+
+/* Mode Switcher */
+.mode-switcher-section {
+    margin-bottom: 20px;
+}
+.mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.mode-option {
+    cursor: pointer;
+}
+.mode-option input {
+    display: none;
+}
+.mode-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+.mode-card i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+.mode-option input:checked + .mode-card {
+    background: rgba(197, 168, 128, 0.1);
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+}
+
+/* Label Container */
+.label-container {
+    width: 600px;
+    height: 400px; /* 3:2 ratio */
+    background: linear-gradient(135deg, #fffcf5 0%, #f4ebd8 100%);
+    color: #333333;
+    position: relative;
+    transform-origin: top left;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.label-inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    border: 6px double #c8a97e; /* Elegant double gold border */
+    padding: 12px;
+    box-sizing: border-box;
+    gap: 12px;
+    background: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l20 20-20 20L0 20z" fill="%23c8a97e" fill-opacity="0.03" fill-rule="evenodd"/></svg>');
+}
+
+/* Three Panels Structure */
+.label-left-panel, .label-right-panel {
+    width: 28%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #4a3f35;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: inset 0 0 10px rgba(200, 169, 126, 0.1);
+}
+.label-center-panel {
+    width: 44%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: 1px solid rgba(200, 169, 126, 0.4);
+    border-right: 1px solid rgba(200, 169, 126, 0.4);
+    padding: 0 10px;
+    position: relative;
+}
+.label-center-panel::before, .label-center-panel::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 90%;
+    background: linear-gradient(to bottom, transparent, #c8a97e, transparent);
+    top: 5%;
+}
+.label-center-panel::before { left: -2px; }
+.label-center-panel::after { right: -2px; }
+
+/* Typography & Details */
+.label-section-title {
+    font-weight: 800;
+    font-size: 11px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #c8a97e;
+    padding-bottom: 2px;
+    color: #5c4021;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.label-nutri-subtitle {
+    font-size: 8px;
+    margin-bottom: 8px;
+    color: #8b7355;
+    font-style: italic;
+}
+.nutri-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 8.5px;
+    color: #333;
+}
+.nutri-table td {
+    border-bottom: 1px dotted #c8a97e;
+    padding: 4px 0;
+}
+.nutri-table tr td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: #5c4021;
+}
+
+.label-ingredients-box, .label-allergen, .label-mfg-box, .label-storage, .label-batch-info {
+    margin-bottom: 12px;
+}
+.label-ingredients-box strong, .label-allergen strong, .label-storage strong {
+    color: #5c4021;
+    font-weight: 800;
+}
+
+/* Center Brand Area */
+.label-brand-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.label-logo {
+    width: 80px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+.label-brand-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #a37c45;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.label-product-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: #7b1e1e;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8), 2px 2px 4px rgba(0,0,0,0.1);
+}
+.label-product-desc {
+    font-size: 11px;
+    font-style: italic;
+    color: #6d5b4b;
+    margin-bottom: auto; /* push things below down */
+    font-weight: 500;
+    padding: 0 15px;
+    line-height: 1.4;
+}
+.label-veg-logo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 800;
+    font-size: 9px;
+    margin-bottom: 12px;
+    color: #16a34a;
+    background: rgba(255,255,255,0.7);
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid #16a34a;
+}
+.veg-box {
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+.veg-dot {
+    width: 6px;
+    height: 6px;
+    background: #16a34a;
+    border-radius: 50%;
+}
+.label-weight-box {
+    font-size: 11px;
+    padding: 6px 20px;
+    background: linear-gradient(to right, #c8a97e, #dfc6a3, #c8a97e);
+    color: #3e2723;
+    border: 1px solid #a37c45;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-transform: uppercase;
+}
+.label-weight-box strong {
+    font-size: 16px;
+    font-weight: 900;
+    margin-left: 4px;
+}
+
+/* FSSAI Area */
+.label-fssai-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #c8a97e;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+}
+.fssai-img {
+    height: 16px;
+    margin-bottom: 3px;
+}
+.label-fssai-box div {
+    font-size: 9px;
+    font-weight: 700;
+    color: #5c4021;
+}
+
+.label-batch-info div {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #c8a97e;
+    padding-bottom: 4px;
+    margin-top: 4px;
+}
+
+/* Exact User Requested Sizes & Styles */
+.label-container.size-front-2-1 { width: 800px; height: 400px; }
+.label-container.size-front-2-2 { width: 600px; height: 600px; }
+.label-container.size-front-2-3 { width: 400px; height: 600px; }
+.label-container.size-flyer { width: 600px; height: 450px; }
+.label-container.size-banner { width: 800px; height: 450px; }
+.label-container.size-story { width: 450px; height: 800px; }
+.label-container.size-tag { width: 300px; height: 600px; }
+
+/* Vertical Layout overrides for tall sizes so text doesn't squeeze */
+.label-container.size-front-2-3 .label-inner,
+.label-container.size-story .label-inner,
+.label-container.size-tag .label-inner {
+    flex-direction: column;
+}
+
+.label-container.size-front-2-3 .label-left-panel,
+.label-container.size-story .label-left-panel,
+.label-container.size-tag .label-left-panel,
+.label-container.size-front-2-3 .label-center-panel,
+.label-container.size-story .label-center-panel,
+.label-container.size-tag .label-center-panel,
+.label-container.size-front-2-3 .label-right-panel,
+.label-container.size-story .label-right-panel,
+.label-container.size-tag .label-right-panel {
+    width: 100%;
+}
+
+.label-container.size-front-2-3 .label-center-panel,
+.label-container.size-story .label-center-panel,
+.label-container.size-tag .label-center-panel {
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid rgba(200, 169, 126, 0.4);
+    border-bottom: 1px solid rgba(200, 169, 126, 0.4);
+    padding: 15px 0;
+}
+
+.label-container.size-front-2-3 .label-center-panel::before,
+.label-container.size-story .label-center-panel::before,
+.label-container.size-tag .label-center-panel::before,
+.label-container.size-front-2-3 .label-center-panel::after,
+.label-container.size-story .label-center-panel::after,
+.label-container.size-tag .label-center-panel::after {
+    display: none;
+}

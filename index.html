@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="style.css?v=2.1">
+    <link rel="stylesheet" href="label.css">
     <!-- html2canvas library for PDF/Image download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -20,20 +21,35 @@
         <!-- Sidebar Controls -->
         <aside class="control-panel">
             <header class="panel-header">
-                <div class="brand-logo-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <div class="brand-logo" style="margin-bottom: 0;">
+                    <div class="brand-logo">
                         <i class="fa-solid fa-pepper-hot"></i>
                         <span>Shahi Customizer</span>
                     </div>
-                    <button type="button" id="btn-clear-all" class="btn-clear-all" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(239, 68, 68, 0.25)'; this.style.borderColor='#ef4444'; this.style.color='#ffffff'; this.style.boxShadow='0 0 8px rgba(239, 68, 68, 0.25)';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.borderColor='rgba(239, 68, 68, 0.3)'; this.style.color='#f87171'; this.style.boxShadow='none';">
-                        <i class="fa-solid fa-trash-can"></i> Clear All
-                    </button>
-                </div>
                 <h1>Mewari Achar Poster Generator</h1>
                 <p>Craft premium marketing posters for social media and Flipkart-style banners</p>
             </header>
 
             <form id="poster-form" onsubmit="event.preventDefault();">
+                <!-- App Mode Switcher -->
+                <div class="form-section mode-switcher-section">
+                    <div class="mode-toggle">
+                        <label class="mode-option">
+                            <input type="radio" name="app-mode" value="poster" checked>
+                            <div class="mode-card">
+                                <i class="fa-solid fa-image"></i>
+                                <span>Marketing Poster</span>
+                            </div>
+                        </label>
+                        <label class="mode-option">
+                            <input type="radio" name="app-mode" value="label">
+                            <div class="mode-card">
+                                <i class="fa-solid fa-tag"></i>
+                                <span>Product Label</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Section 1: Product Selector -->
                 <div class="form-section">
                     <h2><span class="step-num">1</span> Select Product Preset</h2>
@@ -353,7 +369,12 @@
 
                 <!-- Section 5B: Marketing & Campaigns -->
                 <div class="form-section">
-                    <h2><span class="step-num">5B</span> Marketing & Campaigns</h2>
+                    <div class="section-header-row">
+                        <h2><span class="step-num">5B</span> Marketing & Campaigns</h2>
+                        <button type="button" id="btn-clear-campaigns" class="btn-section-clear">
+                            <i class="fa-solid fa-trash-can"></i> Clear
+                        </button>
+                    </div>
                     <p class="section-desc">Overlay custom discount banners on the poster</p>
                     <div class="input-group">
                         <label for="campaign-mode">Campaign Mode</label>
@@ -416,7 +437,12 @@
 
                 <!-- Section 5C: Promotional Badges & Seals -->
                 <div class="form-section">
-                    <h2><span class="step-num">5C</span> Marketing Badges</h2>
+                    <div class="section-header-row">
+                        <h2><span class="step-num">5C</span> Marketing Badges</h2>
+                        <button type="button" id="btn-clear-badges" class="btn-section-clear">
+                            <i class="fa-solid fa-trash-can"></i> Clear
+                        </button>
+                    </div>
                     <p class="section-desc">Add, toggle, and position badges on the product image side</p>
                     
                     <!-- Dynamic badges control list will be rendered here by JS -->
@@ -562,9 +588,14 @@
                     </div>
                     <div class="input-group" style="margin-bottom: 0;">
                         <label for="custom-image">Upload Custom Product Image</label>
-                        <div class="file-upload-btn">
-                            <input type="file" id="custom-image" accept="image/*">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Choose Product Image
+                        <div style="display: flex; gap: 8px;">
+                            <div class="file-upload-btn" style="flex: 1; margin-bottom: 0;">
+                                <input type="file" id="custom-image" accept="image/*">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Product Image
+                            </div>
+                            <button type="button" id="btn-remove-custom-image" class="btn-delete-badge" style="display: none; padding: 0 12px; margin-top: 0; align-items: center; justify-content: center; height: 38px;" title="Remove Custom Image">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                         <div id="file-name-display" class="file-name">No custom file chosen</div>
                     </div>
@@ -598,6 +629,118 @@
 
 
 
+                <!-- Label Specific Settings (Hidden by default) -->
+                <div id="label-settings-container" style="display: none;">
+                    <div class="form-section">
+                        <h2><span class="step-num">L1</span> Label Size (Format)</h2>
+                        <div class="ratio-selector">
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="front-2-1" checked>
+                                <div class="ratio-card"><i class="fa-solid fa-panorama"></i><span>Front (2:1)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="front-2-2">
+                                <div class="ratio-card"><i class="fa-solid fa-square"></i><span>Front (2:2)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="front-2-3">
+                                <div class="ratio-card"><i class="fa-solid fa-file-image"></i><span>Front (2:3)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="flyer">
+                                <div class="ratio-card"><i class="fa-solid fa-image"></i><span>Flyer (4:3)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="banner">
+                                <div class="ratio-card"><i class="fa-solid fa-panorama"></i><span>Banner (16:9)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="story">
+                                <div class="ratio-card"><i class="fa-solid fa-mobile-screen"></i><span>Story (9:16)</span></div>
+                            </label>
+                            <label class="ratio-option">
+                                <input type="radio" name="label-size" value="tag">
+                                <div class="ratio-card"><i class="fa-solid fa-tag"></i><span>Tag (1:2)</span></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><span class="step-num">L2</span> Label Information</h2>
+                        <div class="input-group">
+                            <label for="label-ingredients">Ingredients</label>
+                            <textarea id="label-ingredients" rows="3">Ginger, Lemon Juice, Mustard Oil, Salt, Red Chilli Powder, Turmeric, Fenugreek, Fennel, Asafoetida.</textarea>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="label-fssai">FSSAI Lic. No.</label>
+                                <input type="text" id="label-fssai" value="12224018000109">
+                            </div>
+                            <div class="input-group">
+                                <label for="label-batch">Batch No.</label>
+                                <input type="text" id="label-batch" value="MA/24/001">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="label-mfg">Mfg. Date</label>
+                                <input type="text" id="label-mfg" value="July 2024">
+                            </div>
+                            <div class="input-group">
+                                <label for="label-expiry">Best Before</label>
+                                <input type="text" id="label-expiry" value="12 Months from Mfg">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="label-weight">Net Weight</label>
+                            <input type="text" id="label-weight" value="500g">
+                        </div>
+                        <div class="input-group">
+                            <label for="label-mfg-by">Manufactured & Marketed By</label>
+                            <textarea id="label-mfg-by" rows="2">Chittortech Projects, Mewar Heritage Kitchen, Rajasthan - 313001</textarea>
+                        </div>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <label for="label-customer-care">Customer Care / Feedback</label>
+                            <textarea id="label-customer-care" rows="2">Phone: +91 7014101274
+Email: care@mewariachar.com</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><span class="step-num">L3</span> Nutritional Info (Per 100g)</h2>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="nutri-energy">Energy (kcal)</label>
+                                <input type="text" id="nutri-energy" value="250">
+                            </div>
+                            <div class="input-group">
+                                <label for="nutri-protein">Protein (g)</label>
+                                <input type="text" id="nutri-protein" value="2.5">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="nutri-carbs">Carbohydrates (g)</label>
+                                <input type="text" id="nutri-carbs" value="15.0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nutri-sugar">Total Sugar (g)</label>
+                                <input type="text" id="nutri-sugar" value="2.0">
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="nutri-fat">Total Fat (g)</label>
+                                <input type="text" id="nutri-fat" value="20.0">
+                            </div>
+                            <div class="input-group">
+                                <label for="nutri-sodium">Sodium (mg)</label>
+                                <input type="text" id="nutri-sodium" value="1200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Export Toolbar -->
                 <div class="export-actions">
                     <div class="checkbox-group" style="justify-content: center; margin-bottom: 12px; border-bottom: 1px dashed var(--panel-border); padding-bottom: 12px;">
@@ -619,6 +762,76 @@
             <div class="preview-wrapper">
                 <div class="preview-badge" id="preview-ratio-label">Live Poster Preview (1:1 Ratio)</div>
                 
+                <!-- Label Target Container -->
+                <div id="label-canvas" class="label-container" style="display: none;">
+                    <div class="label-inner">
+                        <div class="label-left-panel">
+                            <div class="label-section-title">NUTRITIONAL INFORMATION</div>
+                            <div class="label-nutri-subtitle">(Approx. value per 100g)</div>
+                            <table class="nutri-table">
+                                <tr><td>Energy</td><td id="prev-nutri-energy">250 kcal</td></tr>
+                                <tr><td>Protein</td><td id="prev-nutri-protein">2.5 g</td></tr>
+                                <tr><td>Carbohydrates</td><td id="prev-nutri-carbs">15.0 g</td></tr>
+                                <tr><td>Total Sugar</td><td id="prev-nutri-sugar">2.0 g</td></tr>
+                                <tr><td>Total Fat</td><td id="prev-nutri-fat">20.0 g</td></tr>
+                                <tr><td>Sodium</td><td id="prev-nutri-sodium">1200 mg</td></tr>
+                            </table>
+                            
+                            <div class="label-ingredients-box">
+                                <strong>INGREDIENTS:</strong> <span id="prev-label-ingredients">Ginger, Lemon Juice, Mustard Oil, Salt, Red Chilli Powder, Turmeric, Fenugreek, Fennel, Asafoetida.</span>
+                            </div>
+                            <div class="label-allergen">
+                                <strong>ALLERGEN ADVICE:</strong> Made in a facility that processes mustard and sesame.
+                            </div>
+                        </div>
+                        
+                        <div class="label-center-panel">
+                            <div class="label-brand-top">
+                                <img src="Mewari Achaar Logo.png" class="label-logo" alt="Logo">
+                                <div class="label-brand-name" id="prev-label-brand">मेवाड़ की विरासत</div>
+                            </div>
+                            <div class="label-product-title" id="prev-label-product">अदरक का अचार</div>
+                            <div class="label-product-desc" id="prev-label-desc">Ginger strips soaked in lemon juice and spices.</div>
+                            
+                            <div class="label-veg-logo">
+                                <div class="veg-box"><div class="veg-dot"></div></div>
+                                <span>100% VEG</span>
+                            </div>
+                            
+                            <div class="label-weight-box">
+                                Net Weight: <strong id="prev-label-weight">500g</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="label-right-panel">
+                            <div class="label-mfg-box">
+                                <strong>Manufactured & Marketed By:</strong><br>
+                                <span id="prev-label-mfg-by">Chittortech Projects, Mewar Heritage Kitchen, Rajasthan - 313001</span>
+                            </div>
+
+                            <div class="label-mfg-box" style="margin-top: -6px;">
+                                <strong>Customer Care:</strong><br>
+                                <span id="prev-label-customer-care" style="white-space: pre-wrap;">Phone: +91 7014101274
+Email: care@mewariachar.com</span>
+                            </div>
+                            
+                            <div class="label-fssai-box">
+                                <div>FSSAI Lic No. <strong id="prev-label-fssai">12224018000109</strong></div>
+                            </div>
+                            
+                            <div class="label-batch-info">
+                                <div><strong>Batch No:</strong> <span id="prev-label-batch">MA/24/001</span></div>
+                                <div><strong>Mfg Date:</strong> <span id="prev-label-mfg">July 2024</span></div>
+                                <div><strong>Best Before:</strong> <span id="prev-label-expiry">12 Months from Mfg</span></div>
+                            </div>
+                            
+                            <div class="label-storage">
+                                <strong>Storage Instructions:</strong> Store in a cool, dry place. Retain layer of oil on top. Use a dry spoon.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Poster Target Container for html2canvas -->
                 <div id="poster-canvas" class="poster-container theme-royal-durbar ratio-square">
                     <!-- Ornate Border Overlays -->
@@ -794,7 +1007,8 @@
             </div>
         </main>
     </div>
-    <!-- Custom JS File -->
-    <script src="app.js?v=1.5"></script>
+    <!-- Application Scripts -->
+    <script src="app.js"></script>
+    <script src="label-logic.js"></script>
 </body>
 </html>

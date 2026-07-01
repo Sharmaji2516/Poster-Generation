@@ -279,6 +279,7 @@ const whatsappCtaInput = document.getElementById("whatsapp-cta");
 const websiteUrlInput = document.getElementById("website-url");
 const customImageInput = document.getElementById("custom-image");
 const fileNameDisplay = document.getElementById("file-name-display");
+const btnRemoveCustomImage = document.getElementById("btn-remove-custom-image");
 
 // Logo Elements
 const customLogoInput = document.getElementById("custom-logo");
@@ -426,6 +427,88 @@ function saveState() {
     }
 }
 
+// Toggle Remove Custom Image button visibility
+function updateRemoveImageButton() {
+    const btn = document.getElementById("btn-remove-custom-image");
+    if (btn) {
+        btn.style.display = customImageSrc ? "inline-flex" : "none";
+    }
+}
+
+// Add custom preset button to the DOM selector grid with a delete trigger
+function addPresetToGrid(id, nameEn, imageSrc) {
+    const grid = document.querySelector(".product-selector-grid");
+    if (!grid) return null;
+    
+    // Check if button already exists
+    let btn = document.querySelector(`.preset-btn[data-preset="${id}"]`);
+    if (btn) return btn;
+
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "preset-btn";
+    btn.dataset.preset = id;
+
+    const thumbContainer = document.createElement("div");
+    thumbContainer.className = "thumb-container";
+
+    const img = document.createElement("img");
+    img.src = imageSrc || "assets/images/ginger.png";
+    img.alt = nameEn;
+
+    const span = document.createElement("span");
+    span.textContent = nameEn.split(" ")[0]; // first word
+
+    thumbContainer.appendChild(img);
+    btn.appendChild(thumbContainer);
+    btn.appendChild(span);
+
+    // Delete Trigger for custom presets
+    const btnDel = document.createElement("button");
+    btnDel.type = "button";
+    btnDel.className = "btn-delete-preset";
+    btnDel.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+    btnDel.title = "Delete Preset";
+    btnDel.addEventListener("click", (e) => {
+        e.stopPropagation(); // prevent click from selecting preset
+        if (confirm(`Are you sure you want to delete the preset "${nameEn}"?`)) {
+            // Delete from data memory
+            delete productPresets[id];
+            if (presetTranslations.english[id]) delete presetTranslations.english[id];
+            if (presetTranslations.hindi[id]) delete presetTranslations.hindi[id];
+            
+            // Remove button from DOM
+            btn.remove();
+            
+            // If the deleted preset is active, switch to ginger
+            if (currentPreset === id) {
+                const gingerBtn = document.querySelector('.preset-btn[data-preset="ginger"]');
+                if (gingerBtn) {
+                    gingerBtn.click();
+                } else {
+                    currentPreset = "ginger";
+                    loadPreset("ginger");
+                }
+            }
+            saveState();
+        }
+    });
+    btn.appendChild(btnDel);
+
+    grid.appendChild(btn);
+
+    // Click listener to load preset
+    btn.addEventListener("click", () => {
+        const allPresetBtns = document.querySelectorAll(".preset-btn");
+        allPresetBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadPreset(id);
+        saveState();
+    });
+
+    return btn;
+}
+
 // Load configurations from localStorage and restore layout
 function loadState() {
     try {
@@ -475,7 +558,6 @@ function loadState() {
         }
 
         if (state.customPresets) {
-            const grid = document.querySelector(".product-selector-grid");
             for (const id in state.customPresets) {
                 const item = state.customPresets[id];
                 productPresets[id] = item.presetData;
@@ -483,37 +565,7 @@ function loadState() {
                 presetTranslations.hindi[id] = item.transHi;
 
                 // Add button to DOM if not already present
-                if (grid && !document.querySelector(`.preset-btn[data-preset="${id}"]`)) {
-                    const btn = document.createElement("button");
-                    btn.type = "button";
-                    btn.className = "preset-btn";
-                    btn.dataset.preset = id;
-
-                    const thumbContainer = document.createElement("div");
-                    thumbContainer.className = "thumb-container";
-
-                    const img = document.createElement("img");
-                    img.src = item.presetData.image;
-                    img.alt = item.transEn.name;
-
-                    const span = document.createElement("span");
-                    span.textContent = item.transEn.name.split(" ")[0];
-
-                    thumbContainer.appendChild(img);
-                    btn.appendChild(thumbContainer);
-                    btn.appendChild(span);
-                    grid.appendChild(btn);
-
-                    btn.addEventListener("click", () => {
-                        const allPresetBtns = document.querySelectorAll(".preset-btn");
-                        allPresetBtns.forEach(b => b.classList.remove("active"));
-                        btn.classList.add("active");
-                        customImageSrc = null;
-                        if (fileNameDisplay) fileNameDisplay.textContent = "No custom file chosen";
-                        loadPreset(btn.dataset.preset);
-                        saveState();
-                    });
-                }
+                addPresetToGrid(id, item.transEn.name, item.presetData.image);
             }
         }
 
@@ -526,6 +578,7 @@ function loadState() {
             customImageSrc = state.customImageSrc;
             if (posterImg) posterImg.src = customImageSrc;
             if (fileNameDisplay) fileNameDisplay.textContent = "Custom Image Loaded";
+            updateRemoveImageButton();
         }
         if (state.customLogoSrc) {
             customLogoSrc = state.customLogoSrc;
@@ -584,6 +637,7 @@ function loadState() {
 
         // 5. Reinitialize event listeners and sync layout
         setupEventListeners();
+        updateRemoveImageButton();
         renderBadgesControls();
         syncPreview();
         updateTheme();
@@ -1341,8 +1395,6 @@ function setupEventListeners() {
             btn.addEventListener("click", () => {
                 presetButtons.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                customImageSrc = null; // Clear custom image track when switching presets
-                if (fileNameDisplay) fileNameDisplay.textContent = "No custom file chosen";
                 loadPreset(btn.dataset.preset);
                 saveState();
             });
@@ -1492,10 +1544,29 @@ function setupEventListeners() {
                 reader.onload = (event) => {
                     customImageSrc = event.target.result;
                     if (posterImg) posterImg.src = customImageSrc;
+                    updateRemoveImageButton();
                     saveState();
                 };
                 reader.readAsDataURL(file);
             }
+        });
+    }
+
+    // Remove Custom Image button listener
+    if (btnRemoveCustomImage) {
+        btnRemoveCustomImage.addEventListener("click", () => {
+            customImageSrc = null;
+            if (customImageInput) customImageInput.value = "";
+            if (fileNameDisplay) fileNameDisplay.textContent = "No custom file chosen";
+            
+            // Revert back to active preset's default image
+            const activePreset = productPresets[currentPreset];
+            if (activePreset && posterImg) {
+                posterImg.src = activePreset.image;
+            }
+            
+            updateRemoveImageButton();
+            saveState();
         });
     }
 
@@ -1677,41 +1748,9 @@ function setupEventListeners() {
             };
 
             // Dynamically create a new button in the DOM preset grid
-            const grid = document.querySelector(".product-selector-grid");
-            if (grid) {
-                const btn = document.createElement("button");
-                btn.type = "button";
-                btn.className = "preset-btn";
-                btn.dataset.preset = id;
-
-                const thumbContainer = document.createElement("div");
-                thumbContainer.className = "thumb-container";
-
-                const img = document.createElement("img");
-                img.src = newPresetImageSrc || "assets/images/ginger.png";
-                img.alt = nameEn;
-
-                const span = document.createElement("span");
-                span.textContent = nameEn.split(" ")[0]; // just show first word for compact fit
-
-                thumbContainer.appendChild(img);
-                btn.appendChild(thumbContainer);
-                btn.appendChild(span);
-                grid.appendChild(btn);
-
-                // Add event listener to new button
-                btn.addEventListener("click", () => {
-                    const allPresetBtns = document.querySelectorAll(".preset-btn");
-                    allPresetBtns.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-                    customImageSrc = null;
-                    if (fileNameDisplay) fileNameDisplay.textContent = "No custom file chosen";
-                    loadPreset(btn.dataset.preset);
-                    saveState();
-                });
-
-                // Auto click new button to select it
-                btn.click();
+            const newBtn = addPresetToGrid(id, nameEn, newPresetImageSrc || "assets/images/ginger.png");
+            if (newBtn) {
+                newBtn.click();
             }
 
             // Reset and close panel
@@ -1720,68 +1759,68 @@ function setupEventListeners() {
         });
     }
 
-    // Clear All Selections Action
-    const btnClearAll = document.getElementById("btn-clear-all");
-    if (btnClearAll) {
-        btnClearAll.addEventListener("click", clearAllSelections);
+    // Section-specific Clear Actions
+    const btnClearCampaigns = document.getElementById("btn-clear-campaigns");
+    if (btnClearCampaigns) {
+        btnClearCampaigns.addEventListener("click", clearCampaigns);
+    }
+
+    const btnClearBadges = document.getElementById("btn-clear-badges");
+    if (btnClearBadges) {
+        btnClearBadges.addEventListener("click", clearBadges);
     }
 }
 
-// Clear all inputs, sizes, checkboxes, and active badges to provide a fresh canvas
-function clearAllSelections() {
-    // 1. Uncheck all badge selections
-    badges.forEach(badge => {
-        badge.show = false;
-    });
-    
-    // 2. Uncheck all price sizes
-    const sizeCheckboxes = ["show-100g", "show-250g", "show-500g", "show-1kg"];
-    sizeCheckboxes.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.checked = false;
-    });
-
-    // 3. Uncheck QR code
+// Reset only Section 5B fields: campaign mode, campaign titles, QR code, and overlay adjustments
+function clearCampaigns() {
+    if (campaignModeSelect) campaignModeSelect.value = "showcase";
+    if (campaignTitleInput) campaignTitleInput.value = "";
+    if (campaignSubtitleInput) campaignSubtitleInput.value = "";
     if (showQrCodeCheckbox) showQrCodeCheckbox.checked = false;
 
-    // 4. Clear text customizer inputs
-    const textInputs = [
-        "brand-title", "product-name", "product-desc",
-        "badge-text", "image-tag-text",
-        "campaign-title", "campaign-subtitle",
-        "fk-sale-title", "fk-discount-text", "fk-cta-text"
-    ];
-    textInputs.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
-    });
-
-    // 5. Reset selects
-    if (campaignModeSelect) campaignModeSelect.value = "showcase";
-    if (badgeStyleSelect) badgeStyleSelect.value = "classic";
-    if (imageTagStyleSelect) imageTagStyleSelect.value = "modern-ribbon";
-
-    // 6. Reset layout sliders to standard defaults
-    if (sliderZoom) sliderZoom.value = 100;
-    if (sliderPanX) sliderPanX.value = 0;
-    if (sliderPanY) sliderPanY.value = 0;
-    
+    // Reset overlay layout sliders to standard defaults
     const sliderOverlayX = document.getElementById("slider-overlay-x");
     const sliderOverlayY = document.getElementById("slider-overlay-y");
     const sliderOverlayScale = document.getElementById("slider-overlay-scale");
     const sliderOverlayRotate = document.getElementById("slider-overlay-rotate");
+
     if (sliderOverlayX) sliderOverlayX.value = 35;
     if (sliderOverlayY) sliderOverlayY.value = 35;
     if (sliderOverlayScale) sliderOverlayScale.value = 100;
     if (sliderOverlayRotate) sliderOverlayRotate.value = -8;
 
-    // 7. Reset taste meters (sliders) to 0
-    const tasteSliders = [sliderSpicy, sliderSour, sliderEarthy, sliderStrong];
-    tasteSliders.forEach(slider => {
-        if (slider) slider.value = 0;
+    updateCampaignMode();
+    updateOverlayTransform();
+    updateQrCode();
+    syncPreview();
+    saveState();
+}
+
+// Default badge positions for built-in badges to restore upon reset
+const defaultBadgeCoords = {
+    "flat60": { x: 185, y: -8, scale: 100 },
+    "spinwin": { x: -15, y: -8, scale: 100 },
+    "buy1get1": { x: -15, y: 215, scale: 100 },
+    "freeshipping": { x: 185, y: 215, scale: 100 },
+    "bestseller": { x: 212, y: -12, scale: 100 },
+    "organic": { x: -8, y: 230, scale: 100 },
+    "traditional": { x: -8, y: -8, scale: 100 },
+    "limited": { x: 212, y: 230, scale: 100 },
+    "homemade": { x: 50, y: 50, scale: 100 },
+    "pureveg": { x: 50, y: 150, scale: 100 },
+    "premium": { x: 150, y: 50, scale: 100 }
+};
+
+// Reset only Section 5C badges: turn off active ones and reset placement sliders
+function clearBadges() {
+    badges.forEach(badge => {
+        badge.show = false;
+        const defaults = defaultBadgeCoords[badge.id] || { x: 100, y: 100, scale: 100 };
+        badge.x = defaults.x;
+        badge.y = defaults.y;
+        badge.scale = defaults.scale;
     });
 
-    // 8. Refresh sidebar controls list, preview canvas, and localStorage
     renderBadgesControls();
     syncPreview();
     saveState();
