@@ -365,6 +365,21 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Left Side Story/Caption Customizer (Poster Only) -->
+                    <div style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                        <h4 style="color: var(--gold-light); font-size: 0.85rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                            <i class="fa-solid fa-feather-pointed"></i> Left Side Story / Caption
+                        </h4>
+                        <div class="input-group">
+                            <label for="poster-caption-title">Caption Title</label>
+                            <input type="text" id="poster-caption-title" value="विशेष संग्रह" placeholder="e.g. विशेष संग्रह / Special Collection">
+                        </div>
+                        <div class="input-group">
+                            <label for="poster-caption-desc">Caption Story / Description</label>
+                            <textarea id="poster-caption-desc" rows="3" placeholder="Brief story or tagline for the left side...">हुकुम, हमारे हर जार में मेवाड़ की प्राचीन परंपरा समाहित है। चाहे वह मथानिया की मिर्च हो या परंपरा से जुड़ी हल्दी, हर स्वाद लाजवाब है।</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Section 5B: Marketing & Campaigns -->
@@ -762,8 +777,87 @@ Email: care@mewariachar.com</textarea>
             <div class="preview-wrapper">
                 <div class="preview-badge" id="preview-ratio-label">Live Poster Preview (1:1 Ratio)</div>
                 
-                <!-- Label Target Container -->
-                <div id="label-canvas" class="label-container" style="display: none;">
+                <!-- Label Sizing Controls (Visible only in Product Label mode) -->
+                <div id="label-size-controls" class="label-size-controls" style="display: none;">
+                    <div class="size-control-header">
+                        <i class="fa-solid fa-arrows-left-right-to-line"></i>
+                        <span>Label Dimensions Customizer</span>
+                    </div>
+                    <div class="size-sliders-grid">
+                        <div class="size-slider-row">
+                            <label><i class="fa-solid fa-arrows-left-right"></i> Width</label>
+                            <div class="slider-with-val">
+                                <input type="range" id="label-width-slider" min="200" max="1000" value="600" step="10">
+                                <span class="size-val-badge" id="label-width-val">600px</span>
+                            </div>
+                        </div>
+                        <div class="size-slider-row">
+                            <label><i class="fa-solid fa-arrows-up-down"></i> Height</label>
+                            <div class="slider-with-val">
+                                <input type="range" id="label-height-slider" min="200" max="1000" value="400" step="10">
+                                <span class="size-val-badge" id="label-height-val">400px</span>
+                            </div>
+                        </div>
+                        <div class="size-slider-row">
+                            <label><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Scale</label>
+                            <div class="slider-with-val">
+                                <input type="range" id="label-zoom-slider" min="30" max="150" value="100" step="5">
+                                <span class="size-val-badge" id="label-zoom-val">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="size-sliders-grid mt-3" style="border-top: 1px dashed rgba(197, 168, 128, 0.2); padding-top: 12px;">
+                        <div class="size-slider-row">
+                            <label><i class="fa-solid fa-image"></i> Logo Size</label>
+                            <div class="slider-with-val">
+                                <input type="range" id="label-logo-slider" min="30" max="200" value="80" step="5">
+                                <span class="size-val-badge" id="label-logo-val">80px</span>
+                            </div>
+                        </div>
+                        <div class="size-slider-row">
+                            <label><i class="fa-solid fa-crop-simple"></i> Product Img Size</label>
+                            <div class="slider-with-val">
+                                <input type="range" id="label-img-slider" min="50" max="250" value="120" step="5">
+                                <span class="size-val-badge" id="label-img-val">120px</span>
+                            </div>
+                        </div>
+                        <div class="size-slider-row" style="justify-content: center;">
+                            <div class="checkbox-group" style="margin-top: 18px; margin-bottom: 0;">
+                                <label class="switch">
+                                    <input type="checkbox" id="label-show-img-checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                                <label for="label-show-img-checkbox" style="font-size: 0.7rem; color: var(--gold-light); cursor: pointer;">Show Product Image</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="presets-section">
+                        <span class="presets-label">Preset Dimensions:</span>
+                        <div class="size-presets-grid">
+                            <button type="button" class="size-preset-btn" data-width="400" data-height="200">
+                                Small (400x200)
+                            </button>
+                            <button type="button" class="size-preset-btn active" data-width="600" data-height="400">
+                                Medium (600x400)
+                            </button>
+                            <button type="button" class="size-preset-btn" data-width="800" data-height="400">
+                                Large (800x400)
+                            </button>
+                            <button type="button" class="size-preset-btn" data-width="400" data-height="600">
+                                Tall (400x600)
+                            </button>
+                            <button type="button" class="size-preset-btn" data-width="500" data-height="500">
+                                Square (500x500)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Label Target Container with Scale Wrapper -->
+                <div id="label-scale-wrapper" style="display: none; justify-content: center; align-items: flex-start; transition: all 0.2s ease;">
+                    <div id="label-canvas" class="label-container">
                     <div class="label-inner">
                         <div class="label-left-panel">
                             <div class="label-section-title">NUTRITIONAL INFORMATION</div>
@@ -791,6 +885,8 @@ Email: care@mewariachar.com</textarea>
                                 <div class="label-brand-name" id="prev-label-brand">मेवाड़ की विरासत</div>
                             </div>
                             <div class="label-product-title" id="prev-label-product">अदरक का अचार</div>
+                            <!-- Dynamic Product Image on Label -->
+                            <img id="prev-label-product-img" class="label-product-img" src="" style="display: none; border-radius: 6px; object-fit: cover; border: 1.5px solid #c8a97e; margin-bottom: 10px;">
                             <div class="label-product-desc" id="prev-label-desc">Ginger strips soaked in lemon juice and spices.</div>
                             
                             <div class="label-veg-logo">
@@ -831,15 +927,11 @@ Email: care@mewariachar.com</span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Poster Target Container for html2canvas -->
+            <!-- Poster Target Container with Scale Wrapper -->
+            <div id="poster-scale-wrapper" style="display: flex; justify-content: center; align-items: flex-start; transition: all 0.2s ease; width: 100%;">
                 <div id="poster-canvas" class="poster-container theme-royal-durbar ratio-square">
-                    <!-- Ornate Border Overlays -->
-                    <div class="border-top-left"></div>
-                    <div class="border-top-right"></div>
-                    <div class="border-bottom-left"></div>
-                    <div class="border-bottom-right"></div>
-
                     <!-- Watermark Pattern Background -->
                     <div class="poster-pattern"></div>
 
@@ -867,6 +959,32 @@ Email: care@mewariachar.com</span>
                         <!-- Image Side -->
                         <div class="poster-image-side">
                             <!-- Royal Saffron Mandala Ornament -->
+                            <div class="image-bg-ornament">
+                                <svg class="mandala-svg" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.4"/>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.3"/>
+                                    <circle cx="50" cy="50" r="25" fill="none" stroke="var(--gold-primary)" stroke-width="0.3" stroke-dasharray="1 1" opacity="0.5"/>
+                                    <g stroke="var(--gold-primary)" stroke-width="0.4" fill="none" opacity="0.6">
+                                        <path d="M50,5 C55,20 45,20 50,5 Z"/>
+                                        <path d="M50,95 C55,80 45,80 50,95 Z"/>
+                                        <path d="M5,50 C20,55 20,45 5,50 Z"/>
+                                        <path d="M95,50 C80,55 80,45 95,50 Z"/>
+                                        <path d="M18,18 C30,30 25,35 18,18 Z"/>
+                                        <path d="M82,82 C70,70 75,65 82,82 Z"/>
+                                        <path d="M18,82 C30,70 25,65 18,82 Z"/>
+                                        <path d="M82,18 C70,30 75,35 82,18 Z"/>
+                                        <line x1="50" y1="50" x2="50" y2="10"/>
+                                        <line x1="50" y1="50" x2="50" y2="90"/>
+                                        <line x1="50" y1="50" x2="10" y2="50"/>
+                                        <line x1="50" y1="50" x2="90" y2="50"/>
+                                        <line x1="50" y1="50" x2="22" y2="22"/>
+                                        <line x1="50" y1="50" x2="78" y2="78"/>
+                                        <line x1="50" y1="50" x2="22" y2="78"/>
+                                        <line x1="50" y1="50" x2="78" y2="22"/>
+                                    </g>
+                                    <circle cx="50" cy="50" r="8" fill="none" stroke="var(--gold-primary)" stroke-width="0.5" opacity="0.8"/>
+                                </svg>
+                            </div>
                             <div class="image-container-wrapper">
                                 <div class="image-frame-shadow">
                                     <div class="image-promo-tag" id="preview-image-tag" style="display: none;"></div>
@@ -1004,6 +1122,7 @@ Email: care@mewariachar.com</span>
                     </div>
 
                 </div>
+            </div>
             </div>
         </main>
     </div>

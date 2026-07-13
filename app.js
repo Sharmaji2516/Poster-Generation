@@ -235,6 +235,8 @@ const badgeTextInput = document.getElementById("badge-text");
 const badgeStyleSelect = document.getElementById("badge-style");
 const imageTagTextInput = document.getElementById("image-tag-text");
 const imageTagStyleSelect = document.getElementById("image-tag-style");
+const posterCaptionTitleInput = document.getElementById("poster-caption-title");
+const posterCaptionDescInput = document.getElementById("poster-caption-desc");
 
 // Flipkart Specific Inputs
 const fkSaleTitleInput = document.getElementById("fk-sale-title");
@@ -367,7 +369,7 @@ function getFormValues() {
 
     // Form inputs, selects, sliders, checkboxes
     const ids = [
-        "brand-title", "product-name", "product-desc",
+        "brand-title", "product-name", "product-desc", "poster-caption-title", "poster-caption-desc",
         "badge-text", "badge-style", "image-tag-text", "image-tag-style",
         "campaign-mode", "campaign-title", "campaign-subtitle",
         "show-qr-code",
@@ -644,12 +646,30 @@ function loadState() {
         updateRatio();
     } catch (e) {
         console.error("Error loading state from localStorage, falling back to defaults", e);
+        try {
+            localStorage.removeItem("mewari_poster_generator_state");
+        } catch (err) {}
+        
+        // Fallback default initialization
+        if (customLogoPreview && fkLogoPreview) {
+            customLogoPreview.src = "Mewari Achaar Logo.png";
+            fkLogoPreview.src = "Mewari Achaar Logo.png";
+            customLogoPreview.style.display = "block";
+            if (defaultRoyalCrest) defaultRoyalCrest.style.display = "none";
+            if (logoNameDisplay) logoNameDisplay.textContent = "Using Mewari Achaar Logo";
+        }
+        loadPreset(currentPreset);
+        setupEventListeners();
+        updateTheme();
+        updateRatio();
     }
 }
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
     loadState();
+    updatePosterScale();
+    window.addEventListener("resize", updatePosterScale);
 });
 
 // --- Functions ---
@@ -1230,16 +1250,14 @@ function syncPreview() {
         previewFkSubDetail.textContent = `${productNameInput.value.toUpperCase()} â€¢ ${fkSubText}`;
     }
 
-    // Image Side Caption Translation Sync
-    const captionLang = (currentLanguage === "english") ? "english" : "hindi";
-    const captionTrans = staticTextTranslations[captionLang];
+    // Image Side Caption Input Sync
     const previewCaptionTitle = document.getElementById("preview-caption-title");
     const previewCaptionDesc = document.getElementById("preview-caption-desc");
-    if (previewCaptionTitle && captionTrans) {
-        previewCaptionTitle.textContent = captionTrans.captionTitle;
+    if (previewCaptionTitle && posterCaptionTitleInput) {
+        previewCaptionTitle.textContent = posterCaptionTitleInput.value;
     }
-    if (previewCaptionDesc && captionTrans) {
-        previewCaptionDesc.textContent = captionTrans.captionDesc;
+    if (previewCaptionDesc && posterCaptionDescInput) {
+        previewCaptionDesc.textContent = posterCaptionDescInput.value;
     }
 
     // Sync new Marketing elements
@@ -1267,6 +1285,8 @@ function handleLanguageChange() {
     const staticTrans = staticTextTranslations[langKey];
     
     if (brandTitleInput) brandTitleInput.value = staticTrans.brandTitle;
+    if (posterCaptionTitleInput) posterCaptionTitleInput.value = staticTrans.captionTitle;
+    if (posterCaptionDescInput) posterCaptionDescInput.value = staticTrans.captionDesc;
     
     if (currentLanguage === "hinglish") {
         if (badgeTextInput) badgeTextInput.value = staticTextTranslations.english.promoBadge;
@@ -1329,6 +1349,7 @@ function updateRatio() {
             previewRatioLabel.textContent = "Live Poster Preview (1:1 Ratio)";
         }
     }
+    updatePosterScale();
 }
 
 
@@ -1364,6 +1385,7 @@ function updateTheme() {
     }
     
     updateThemeColorStyles();
+    updatePosterScale();
 }
 
 // Update custom variables for active flavor (used in Spiced Splash & Flipkart themes)
@@ -1425,6 +1447,7 @@ function setupEventListeners() {
     // Standard Form Inputs
     const inputsToSync = [
         brandTitleInput, productNameInput, productDescInput,
+        posterCaptionTitleInput, posterCaptionDescInput,
         badgeTextInput, badgeStyleSelect,
         imageTagTextInput, imageTagStyleSelect,
         price100gInput, price250gInput, price500gInput, price1kgInput,
@@ -1824,4 +1847,50 @@ function clearBadges() {
     renderBadgesControls();
     syncPreview();
     saveState();
+}
+
+// Automatically scale Marketing Poster to fit the available preview area height and width without scrolling/clipping
+function updatePosterScale() {
+    const previewArea = document.querySelector(".preview-area");
+    const posterCanvas = document.getElementById("poster-canvas");
+    const scaleWrapper = document.getElementById("poster-scale-wrapper");
+    if (!previewArea || !posterCanvas || !scaleWrapper) return;
+
+    // Temporarily remove transition to prevent layout lag
+    const originalTransition = posterCanvas.style.transition;
+    posterCanvas.style.transition = 'none';
+
+    // Reset styles to get original layout dimensions
+    posterCanvas.style.transform = "none";
+    scaleWrapper.style.width = "auto";
+    scaleWrapper.style.height = "auto";
+
+    const rect = previewArea.getBoundingClientRect();
+    const availableWidth = rect.width - 80; // 40px left and right padding
+    
+    // Get badge height for spacing
+    const badge = document.getElementById("preview-ratio-label");
+    const badgeHeight = badge ? badge.getBoundingClientRect().height + 16 : 46;
+    const availableHeight = rect.height - 80 - badgeHeight;
+
+    const posterWidth = posterCanvas.offsetWidth;
+    const posterHeight = posterCanvas.offsetHeight;
+
+    if (posterWidth > 0 && posterHeight > 0) {
+        const scaleX = availableWidth / posterWidth;
+        const scaleY = availableHeight / posterHeight;
+        let scaleFactor = Math.min(scaleX, scaleY);
+
+        // Keep it at max scale 1.0 to preserve resolution, enforce min scale
+        if (scaleFactor > 1.0) scaleFactor = 1.0;
+        if (scaleFactor < 0.2) scaleFactor = 0.2;
+
+        posterCanvas.style.transform = `scale(${scaleFactor})`;
+        scaleWrapper.style.width = `${posterWidth * scaleFactor}px`;
+        scaleWrapper.style.height = `${posterHeight * scaleFactor}px`;
+    }
+
+    setTimeout(() => {
+        posterCanvas.style.transition = originalTransition;
+    }, 50);
 }

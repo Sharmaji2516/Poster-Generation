@@ -13,6 +13,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const labelCanvas = document.getElementById('label-canvas');
     const previewRatioLabel = document.getElementById('preview-ratio-label');
     
+    // Custom Sizing Control Elements
+    const labelSizeControls = document.getElementById('label-size-controls');
+    const labelWidthSlider = document.getElementById('label-width-slider');
+    const labelWidthVal = document.getElementById('label-width-val');
+    const labelHeightSlider = document.getElementById('label-height-slider');
+    const labelHeightVal = document.getElementById('label-height-val');
+    const labelZoomSlider = document.getElementById('label-zoom-slider');
+    const labelZoomVal = document.getElementById('label-zoom-val');
+    const sizePresetButtons = document.querySelectorAll('.size-preset-btn');
+    
+    // Logo & Product Image Sizing Elements
+    const labelLogoSlider = document.getElementById('label-logo-slider');
+    const labelLogoVal = document.getElementById('label-logo-val');
+    const labelImgSlider = document.getElementById('label-img-slider');
+    const labelImgVal = document.getElementById('label-img-val');
+    const labelShowImgCheckbox = document.getElementById('label-show-img-checkbox');
+    
     // Label Inputs
     const labelIngredients = document.getElementById('label-ingredients');
     const labelFssai = document.getElementById('label-fssai');
@@ -82,56 +99,193 @@ document.addEventListener('DOMContentLoaded', () => {
         if(prevNutriSugar) prevNutriSugar.textContent = nutriSugar.value + ' g';
         if(prevNutriFat) prevNutriFat.textContent = nutriFat.value + ' g';
         if(prevNutriSodium) prevNutriSodium.textContent = nutriSodium.value + ' mg';
+
+        // Sync custom logo if uploaded
+        const labelLogoEl = labelCanvas ? labelCanvas.querySelector('.label-logo') : null;
+        if (labelLogoEl) {
+            if (window.customLogoSrc) {
+                labelLogoEl.src = window.customLogoSrc;
+            } else {
+                labelLogoEl.src = 'Mewari Achaar Logo.png';
+            }
+        }
+
+        // Sync custom product image on label
+        const labelProductImgEl = document.getElementById('prev-label-product-img');
+        if (labelProductImgEl) {
+            if (window.customImageSrc) {
+                labelProductImgEl.src = window.customImageSrc;
+            } else if (window.productPresets && window.currentPreset && window.productPresets[window.currentPreset]) {
+                labelProductImgEl.src = window.productPresets[window.currentPreset].image;
+            }
+        }
+
+        updateLabelElementsSizing();
+    }
+
+    function updateLabelElementsSizing() {
+        if (!labelCanvas) return;
+        
+        const logoEl = labelCanvas.querySelector('.label-logo');
+        const imgEl = document.getElementById('prev-label-product-img');
+        const showImg = labelShowImgCheckbox ? labelShowImgCheckbox.checked : false;
+
+        // Logo Size control
+        if (logoEl) {
+            if (showImg) {
+                logoEl.style.display = 'none';
+            } else {
+                logoEl.style.display = 'block';
+                if (labelLogoSlider) {
+                    const logoSize = labelLogoSlider.value;
+                    logoEl.style.width = logoSize + 'px';
+                    if (labelLogoVal) labelLogoVal.textContent = logoSize + 'px';
+                }
+            }
+        }
+
+        // Product Img Size control
+        if (imgEl) {
+            if (showImg) {
+                imgEl.style.display = 'block';
+                if (labelImgSlider) {
+                    const imgSize = labelImgSlider.value;
+                    imgEl.style.width = imgSize + 'px';
+                    imgEl.style.height = imgSize + 'px';
+                    if (labelImgVal) labelImgVal.textContent = imgSize + 'px';
+                }
+            } else {
+                imgEl.style.display = 'none';
+            }
+        }
+        autoFitLabelContent();
+    }
+
+    function autoFitLabelContent() {
+        if (!labelCanvas) return;
+        const inner = labelCanvas.querySelector('.label-inner');
+        if (!inner) return;
+        
+        inner.style.zoom = '1';
+        const panels = inner.querySelectorAll('.label-left-panel, .label-center-panel, .label-right-panel');
+        let currentZoom = 1.0;
+        
+        for (let iter = 0; iter < 15; iter++) {
+            let overflow = false;
+            panels.forEach(panel => {
+                if (panel.scrollHeight > panel.clientHeight + 4) {
+                    overflow = true;
+                }
+            });
+            if (overflow && currentZoom > 0.45) {
+                currentZoom -= 0.04;
+                inner.style.zoom = currentZoom;
+            } else {
+                break;
+            }
+        }
+    }
+
+    function updateLabelDimensions(width, height, zoom = null) {
+        if (!labelCanvas) return;
+        
+        labelCanvas.style.width = width + 'px';
+        labelCanvas.style.height = height + 'px';
+        
+        if (labelWidthSlider) {
+            labelWidthSlider.value = width;
+            labelWidthVal.textContent = width + 'px';
+        }
+        if (labelHeightSlider) {
+            labelHeightSlider.value = height;
+            labelHeightVal.textContent = height + 'px';
+        }
+        
+        // Dynamically toggle vertical layout layout-vertical class
+        if (width < height) {
+            labelCanvas.classList.add('layout-vertical');
+        } else {
+            labelCanvas.classList.remove('layout-vertical');
+        }
+        
+        // Apply zoom scaling
+        if (zoom !== null && labelZoomSlider) {
+            labelZoomSlider.value = zoom;
+            labelZoomVal.textContent = zoom + '%';
+        }
+        
+        const currentZoom = labelZoomSlider ? parseInt(labelZoomSlider.value) : 100;
+        const scaleFactor = currentZoom / 100;
+        labelCanvas.style.transform = `scale(${scaleFactor})`;
+        labelCanvas.style.transformOrigin = 'top center';
+        
+        const scaleWrapper = document.getElementById('label-scale-wrapper');
+        if (scaleWrapper) {
+            scaleWrapper.style.width = (width * scaleFactor) + 'px';
+            scaleWrapper.style.height = (height * scaleFactor) + 'px';
+        }
+        
+        if (previewRatioLabel) {
+            previewRatioLabel.textContent = `Live Label Preview (${width}x${height} px, Zoom ${currentZoom}%)`;
+        }
+        autoFitLabelContent();
     }
 
     function toggleMode(mode) {
+        const posterScaleWrapper = document.getElementById('poster-scale-wrapper');
         if (mode === 'label') {
-            // Hide all poster sections except the first one (Product preset) and the customizer text (section 5)
-            // Actually, we want to hide most poster settings, let's just hide everything and show label settings.
             posterSections.forEach(sec => {
                 const heading = sec.querySelector('h2');
                 if (heading) {
                     const text = heading.textContent;
                     if (text.includes('Product Preset') || text.includes('Customize Text')) {
-                        sec.style.display = 'block'; // Keep product selection and basic text
+                        sec.style.display = 'block';
                     } else {
-                        sec.style.display = 'none'; // Hide aspect ratio, theme, badges, etc.
+                        sec.style.display = 'none';
                     }
                 }
             });
             
-            // Show label settings
             if (labelSettingsContainer) labelSettingsContainer.style.display = 'block';
+            if (labelSizeControls) labelSizeControls.style.display = 'flex';
             
-            // Toggle canvases
             if (posterCanvas) posterCanvas.style.display = 'none';
+            if (posterScaleWrapper) posterScaleWrapper.style.display = 'none';
+            const scaleWrapper = document.getElementById('label-scale-wrapper');
+            if (scaleWrapper) scaleWrapper.style.display = 'flex';
             if (labelCanvas) labelCanvas.style.display = 'flex';
-            if (previewRatioLabel) previewRatioLabel.textContent = 'Live Label Preview (3:2 Print Ratio)';
+            
+            const w = labelWidthSlider ? parseInt(labelWidthSlider.value) : 600;
+            const h = labelHeightSlider ? parseInt(labelHeightSlider.value) : 400;
+            const z = labelZoomSlider ? parseInt(labelZoomSlider.value) : 100;
+            updateLabelDimensions(w, h, z);
             
             updateLabelPreview();
         } else {
-            // Show all poster sections
             posterSections.forEach(sec => {
                 sec.style.display = 'block';
             });
             
-            // Hide label settings
             if (labelSettingsContainer) labelSettingsContainer.style.display = 'none';
+            if (labelSizeControls) labelSizeControls.style.display = 'none';
             
-            // Toggle canvases
+            const scaleWrapper = document.getElementById('label-scale-wrapper');
             if (posterCanvas) posterCanvas.style.display = 'flex';
+            if (posterScaleWrapper) posterScaleWrapper.style.display = 'flex';
+            if (scaleWrapper) scaleWrapper.style.display = 'none';
             if (labelCanvas) labelCanvas.style.display = 'none';
             
-            // Re-trigger standard ratio label logic (from app.js) by firing event on ratio radio
             const checkedRatio = document.querySelector('input[name="poster-ratio"]:checked');
             if (checkedRatio && previewRatioLabel) {
-                // simple reset based on value, normally app.js handles this on click
                 let ratioText = "1:1 Ratio";
                 if(checkedRatio.value === 'landscape') ratioText = "16:9 Ratio";
                 if(checkedRatio.value === 'story') ratioText = "9:16 Ratio";
                 if(checkedRatio.value === 'print-banner') ratioText = "3:2 Ratio";
                 if(checkedRatio.value === 'flyer') ratioText = "4:3 Ratio";
                 previewRatioLabel.textContent = 'Live Poster Preview (' + ratioText + ')';
+            }
+            if (typeof updatePosterScale === 'function') {
+                updatePosterScale();
             }
         }
     }
@@ -144,31 +298,117 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const labelSizeRadios = document.querySelectorAll('input[name="label-size"]');
-    const allSizes = [
-        'size-front-2-1', 'size-front-2-2', 'size-front-2-3',
-        'size-flyer', 'size-banner', 'size-story', 'size-tag'
-    ];
     labelSizeRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
-            if (labelCanvas) {
-                labelCanvas.classList.remove(...allSizes);
-                labelCanvas.classList.add('size-' + e.target.value);
-            }
-            if (previewRatioLabel) {
-                let ratioText = "2:1 Ratio";
-                if (e.target.value === 'front-2-1') ratioText = "2:1 Ratio";
-                if (e.target.value === 'front-2-2') ratioText = "2:2 Ratio";
-                if (e.target.value === 'front-2-3') ratioText = "2:3 Ratio";
-                if (e.target.value === 'flyer') ratioText = "4:3 Flyer";
-                if (e.target.value === 'banner') ratioText = "16:9 Banner";
-                if (e.target.value === 'story') ratioText = "9:16 Story";
-                if (e.target.value === 'tag') ratioText = "1:2 Tag";
-                previewRatioLabel.textContent = 'Live Label Preview (' + ratioText + ')';
+            let w = 600, h = 400;
+            if (e.target.value === 'front-2-1') { w = 800; h = 400; }
+            else if (e.target.value === 'front-2-2') { w = 600; h = 600; }
+            else if (e.target.value === 'front-2-3') { w = 400; h = 600; }
+            else if (e.target.value === 'flyer') { w = 600; h = 450; }
+            else if (e.target.value === 'banner') { w = 800; h = 450; }
+            else if (e.target.value === 'story') { w = 450; h = 800; }
+            else if (e.target.value === 'tag') { w = 300; h = 600; }
+            
+            sizePresetButtons.forEach(b => b.classList.remove('active'));
+            sizePresetButtons.forEach(b => {
+                if (parseInt(b.getAttribute('data-width')) === w && parseInt(b.getAttribute('data-height')) === h) {
+                    b.classList.add('active');
+                }
+            });
+            
+            updateLabelDimensions(w, h);
+        });
+    });
+
+    // Custom Sizing controls event listeners
+    if (labelWidthSlider) {
+        labelWidthSlider.addEventListener('input', (e) => {
+            sizePresetButtons.forEach(b => b.classList.remove('active'));
+            updateLabelDimensions(parseInt(e.target.value), parseInt(labelHeightSlider.value));
+        });
+    }
+    if (labelHeightSlider) {
+        labelHeightSlider.addEventListener('input', (e) => {
+            sizePresetButtons.forEach(b => b.classList.remove('active'));
+            updateLabelDimensions(parseInt(labelWidthSlider.value), parseInt(e.target.value));
+        });
+    }
+    if (labelZoomSlider) {
+        labelZoomSlider.addEventListener('input', (e) => {
+            const w = parseInt(labelWidthSlider.value);
+            const h = parseInt(labelHeightSlider.value);
+            updateLabelDimensions(w, h, parseInt(e.target.value));
+        });
+    }
+
+    // Logo & Product Img Size controls listeners
+    if (labelLogoSlider) {
+        labelLogoSlider.addEventListener('input', updateLabelElementsSizing);
+    }
+    if (labelImgSlider) {
+        labelImgSlider.addEventListener('input', updateLabelElementsSizing);
+    }
+    if (labelShowImgCheckbox) {
+        labelShowImgCheckbox.addEventListener('change', updateLabelElementsSizing);
+    }
+
+    sizePresetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            sizePresetButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const w = parseInt(btn.getAttribute('data-width'));
+            const h = parseInt(btn.getAttribute('data-height'));
+            updateLabelDimensions(w, h);
+            
+            // Sync with sidebar radio if possible
+            if (labelSizeRadios) {
+                labelSizeRadios.forEach(radio => {
+                    let rVal = "";
+                    if (w === 800 && h === 400) rVal = "front-2-1";
+                    else if (w === 600 && h === 600) rVal = "front-2-2";
+                    else if (w === 400 && h === 600) rVal = "front-2-3";
+                    else if (w === 600 && h === 450) rVal = "flyer";
+                    else if (w === 800 && h === 450) rVal = "banner";
+                    else if (w === 450 && h === 800) rVal = "story";
+                    else if (w === 300 && h === 600) rVal = "tag";
+                    
+                    radio.checked = (radio.value === rVal);
+                });
             }
         });
     });
 
-    // Attach listeners for live update of label preview
+    // Intercept main preset button selections, custom image, custom logo uploads to sync in real time
+    const mainPresetBtns = document.querySelectorAll('.preset-btn');
+    mainPresetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            setTimeout(updateLabelPreview, 50);
+        });
+    });
+
+    const mainCustomLogo = document.getElementById('custom-logo');
+    if (mainCustomLogo) {
+        mainCustomLogo.addEventListener('change', () => {
+            setTimeout(updateLabelPreview, 50);
+        });
+    }
+
+    const mainCustomImg = document.getElementById('custom-image');
+    if (mainCustomImg) {
+        mainCustomImg.addEventListener('change', () => {
+            setTimeout(updateLabelPreview, 50);
+        });
+    }
+
+    const mainBtnRemoveImg = document.getElementById('btn-remove-custom-image');
+    if (mainBtnRemoveImg) {
+        mainBtnRemoveImg.addEventListener('click', () => {
+            setTimeout(updateLabelPreview, 50);
+        });
+    }
+
+    // Attach listeners for live update of label preview text inputs
     const inputsToWatch = [
         labelIngredients, labelFssai, labelBatch, labelMfg, labelExpiry, labelWeight, labelMfgBy, labelCustomerCare,
         nutriEnergy, nutriProtein, nutriCarbs, nutriSugar, nutriFat, nutriSodium,
@@ -182,6 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Initial sync
+    const initialMode = document.querySelector('input[name="app-mode"]:checked')?.value || 'poster';
+    toggleMode(initialMode);
     updateLabelPreview();
 });
 
