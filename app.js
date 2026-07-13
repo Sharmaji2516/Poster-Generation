@@ -359,7 +359,7 @@ function getFormValues() {
     const values = {};
     
     // Radios
-    const radios = ["poster-ratio", "poster-theme", "poster-lang"];
+    const radios = ["poster-ratio", "poster-theme", "poster-lang", "poster-layout-style", "poster-image-shape"];
     radios.forEach(name => {
         const checkedOpt = document.querySelector(`input[name="${name}"]:checked`);
         if (checkedOpt) {
@@ -604,7 +604,7 @@ function loadState() {
         // 4. Restore Form Values
         if (state.formValues) {
             // Restore radio buttons
-            const radios = ["poster-ratio", "poster-theme", "poster-lang"];
+            const radios = ["poster-ratio", "poster-theme", "poster-lang", "poster-layout-style", "poster-image-shape"];
             radios.forEach(name => {
                 if (state.formValues[name]) {
                     const val = state.formValues[name];
@@ -1350,6 +1350,9 @@ function updateRatio() {
         }
     }
     updatePosterScale();
+    if (typeof updatePosterLayoutAndShape === "function") {
+        updatePosterLayoutAndShape();
+    }
 }
 
 
@@ -1385,7 +1388,9 @@ function updateTheme() {
     }
     
     updateThemeColorStyles();
-    updatePosterScale();
+    if (typeof updatePosterLayoutAndShape === "function") {
+        updatePosterLayoutAndShape();
+    }
 }
 
 // Update custom variables for active flavor (used in Spiced Splash & Flipkart themes)
@@ -1434,6 +1439,22 @@ function setupEventListeners() {
     if (themeOptions) {
         for (const themeRadio of themeOptions) {
             themeRadio.addEventListener("change", updateTheme);
+        }
+    }
+
+    // Layout Radios
+    const layoutOpts = document.getElementsByName("poster-layout-style");
+    if (layoutOpts) {
+        for (const opt of layoutOpts) {
+            opt.addEventListener("change", updatePosterLayoutAndShape);
+        }
+    }
+
+    // Image Shape Radios
+    const shapeOpts = document.getElementsByName("poster-image-shape");
+    if (shapeOpts) {
+        for (const opt of shapeOpts) {
+            opt.addEventListener("change", updatePosterLayoutAndShape);
         }
     }
 
@@ -1893,4 +1914,45 @@ function updatePosterScale() {
     setTimeout(() => {
         posterCanvas.style.transition = originalTransition;
     }, 50);
+}
+
+// Update poster wrapper classes to apply selectable layout structure & image frame shape
+function updatePosterLayoutAndShape() {
+    const posterCanvas = document.getElementById("poster-canvas");
+    if (!posterCanvas) return;
+
+    // Get current layout structure
+    let layoutStyle = "classic";
+    const layoutOptions = document.getElementsByName("poster-layout-style");
+    if (layoutOptions) {
+        for (const opt of layoutOptions) {
+            if (opt.checked) {
+                layoutStyle = opt.value;
+                break;
+            }
+        }
+    }
+
+    // Get current frame shape
+    let imageShape = "square";
+    const shapeOptions = document.getElementsByName("poster-image-shape");
+    if (shapeOptions) {
+        for (const opt of shapeOptions) {
+            if (opt.checked) {
+                imageShape = opt.value;
+                break;
+            }
+        }
+    }
+
+    // Clear old layout and shape classes
+    posterCanvas.classList.remove("layout-classic", "layout-reverse", "layout-stack");
+    posterCanvas.classList.remove("shape-square", "shape-rounded", "shape-circle");
+
+    // Add selected ones
+    posterCanvas.classList.add(`layout-${layoutStyle}`);
+    posterCanvas.classList.add(`shape-${imageShape}`);
+
+    // Update scales to match new sizes/aspects
+    updatePosterScale();
 }

@@ -203,7 +203,61 @@
 
                 <!-- Section 3: Layout & Theme -->
                 <div class="form-section">
-                    <h2><span class="step-num">3</span> Choose Poster Theme</h2>
+                    <h2><span class="step-num">3</span> Layout & Theme</h2>
+                    
+                    <!-- Layout Structure Selection -->
+                    <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-top: 15px; margin-bottom: 8px; color: var(--gold-primary);"><i class="fa-solid fa-layer-group"></i> Layout Structure</h3>
+                    <div class="ratio-selector" style="margin-bottom: 15px; grid-template-columns: repeat(3, 1fr);">
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-layout-style" value="classic" checked>
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-table-columns"></i>
+                                <span>Classic Split</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-layout-style" value="reverse">
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-right-left"></i>
+                                <span>Reverse Split</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-layout-style" value="stack">
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-table-rows"></i>
+                                <span>Top Stack</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Image Frame Shape Selection -->
+                    <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-bottom: 8px; color: var(--gold-primary);"><i class="fa-solid fa-shapes"></i> Image Frame Shape</h3>
+                    <div class="ratio-selector" style="margin-bottom: 20px; grid-template-columns: repeat(3, 1fr);">
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-image-shape" value="square" checked>
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-square"></i>
+                                <span>Square</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-image-shape" value="rounded">
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-square-minus"></i>
+                                <span>Rounded</span>
+                            </div>
+                        </label>
+                        <label class="ratio-option">
+                            <input type="radio" name="poster-image-shape" value="circle">
+                            <div class="ratio-card" style="padding: 8px 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-circle"></i>
+                                <span>Circular</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <h3 class="panel-subtitle" style="font-size: 0.8rem; margin-bottom: 10px; color: var(--gold-primary);"><i class="fa-solid fa-palette"></i> Color & Style Theme</h3>
                     <div class="theme-selector">
                         <label class="theme-option">
                             <input type="radio" name="poster-theme" value="royal-durbar" checked>

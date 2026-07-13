@@ -741,6 +741,44 @@ input[type="range"]::-webkit-slider-thumb:hover {
     transition: var(--transition-smooth);
 }
 
+/* --- Selectable Layout Structure Styles --- */
+.layout-reverse .poster-image-side {
+    order: 2;
+}
+.layout-reverse .poster-info-side {
+    order: 1;
+}
+
+.layout-stack .poster-layout-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto 1fr !important;
+    gap: 15px !important;
+    align-items: stretch !important;
+}
+.layout-stack .poster-image-side {
+    padding: 15px 25px 5px 25px !important;
+}
+.layout-stack .poster-info-side {
+    padding: 5px 25px 15px 25px !important;
+}
+.layout-stack .image-frame-shadow {
+    max-width: 140px !important;
+}
+.layout-stack .image-bg-ornament {
+    width: 80% !important;
+    height: 80% !important;
+}
+
+/* --- Selectable Image Frame Shapes --- */
+.shape-rounded .image-frame-shadow,
+.shape-rounded .poster-image-frame {
+    border-radius: 24px !important;
+}
+.shape-circle .image-frame-shadow,
+.shape-circle .poster-image-frame {
+    border-radius: 50% !important;
+}
+
 .ratio-landscape .poster-layout-grid {
     grid-template-columns: 1fr 1.15fr; /* Switch widths in banner layout to give info side more space */
     gap: 35px;
