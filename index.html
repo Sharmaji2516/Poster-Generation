@@ -13,8 +13,9 @@
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="style.css?v=2.1">
     <link rel="stylesheet" href="label.css">
-    <!-- html2canvas library for PDF/Image download -->
+    <!-- html2canvas & jsPDF libraries for PDF/Image download with Metadata Spec Sheet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -812,16 +813,32 @@ Email: care@mewariachar.com</textarea>
 
                 <!-- Export Toolbar -->
                 <div class="export-actions">
-                    <div class="checkbox-group" style="justify-content: center; margin-bottom: 12px; border-bottom: 1px dashed var(--panel-border); padding-bottom: 12px;">
-                        <label class="switch">
-                            <input type="checkbox" id="export-print-ready">
-                            <span class="slider round"></span>
-                        </label>
-                        <label for="export-print-ready" style="color: var(--gold-light); font-weight: 600; font-size: 0.8rem; cursor: pointer;">High-DPI Print Export (3x Size)</label>
+                    <div class="export-toggles-container" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; border-bottom: 1px dashed var(--panel-border); padding-bottom: 12px;">
+                        <div class="checkbox-group" style="justify-content: flex-start;">
+                            <label class="switch">
+                                <input type="checkbox" id="export-print-ready">
+                                <span class="slider round"></span>
+                            </label>
+                            <label for="export-print-ready" style="color: var(--gold-light); font-weight: 600; font-size: 0.8rem; cursor: pointer;">High-DPI Print Export (3x Size)</label>
+                        </div>
+                        <div class="checkbox-group" style="justify-content: flex-start;">
+                            <label class="switch">
+                                <input type="checkbox" id="export-include-specs" checked>
+                                <span class="slider round"></span>
+                            </label>
+                            <label for="export-include-specs" style="color: #ffd700; font-weight: 600; font-size: 0.8rem; cursor: pointer;">
+                                <i class="fa-solid fa-file-invoice"></i> Attach Parameter & Spec Details Sheet (Page 2)
+                            </label>
+                        </div>
                     </div>
-                    <button type="button" id="btn-download" class="btn-primary">
-                        <i class="fa-solid fa-download"></i> Download Poster (PNG)
-                    </button>
+                    <div class="export-btn-group" style="display: flex; flex-direction: column; gap: 8px;">
+                        <button type="button" id="btn-download-pdf" class="btn-primary" style="background: linear-gradient(135deg, #c5a059 0%, #9a7226 100%); color: #0f1117;">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF Document (2-Page)
+                        </button>
+                        <button type="button" id="btn-download" class="btn-secondary" style="background: rgba(255,255,255,0.08); color: var(--text-muted); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                            <i class="fa-solid fa-file-image"></i> Download Image (PNG)
+                        </button>
+                    </div>
                 </div>
             </form>
         </aside>
@@ -1180,6 +1197,9 @@ Email: care@mewariachar.com</span>
             </div>
         </main>
     </div>
+    <!-- Off-screen container for rendering printable specification metadata sheet -->
+    <div id="spec-sheet-render-container" style="position: absolute; left: -9999px; top: -9999px; width: 1200px; z-index: -1;"></div>
+
     <!-- Application Scripts -->
     <script src="app.js"></script>
     <script src="label-logic.js"></script>
