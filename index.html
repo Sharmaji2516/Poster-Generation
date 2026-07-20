@@ -827,13 +827,13 @@ Email: care@mewariachar.com</textarea>
                                 <span class="slider round"></span>
                             </label>
                             <label for="export-include-specs" style="color: #ffd700; font-weight: 600; font-size: 0.8rem; cursor: pointer;">
-                                <i class="fa-solid fa-file-invoice"></i> Attach Parameter & Spec Details Sheet (Page 2)
+                                <i class="fa-solid fa-sliders"></i> Overlay Parameter & Spec Details Box (Testing Mode)
                             </label>
                         </div>
                     </div>
                     <div class="export-btn-group" style="display: flex; flex-direction: column; gap: 8px;">
                         <button type="button" id="btn-download-pdf" class="btn-primary" style="background: linear-gradient(135deg, #c5a059 0%, #9a7226 100%); color: #0f1117;">
-                            <i class="fa-solid fa-file-pdf"></i> Download PDF Document (2-Page)
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF Document
                         </button>
                         <button type="button" id="btn-download" class="btn-secondary" style="background: rgba(255,255,255,0.08); color: var(--text-muted); border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
                             <i class="fa-solid fa-file-image"></i> Download Image (PNG)
@@ -929,6 +929,19 @@ Email: care@mewariachar.com</textarea>
                 <!-- Label Target Container with Scale Wrapper -->
                 <div id="label-scale-wrapper" style="display: none; justify-content: center; align-items: flex-start; transition: all 0.2s ease;">
                     <div id="label-canvas" class="label-container">
+                        <!-- Label Spec Overlay Box (Right Side Corner) -->
+                        <div id="label-spec-overlay" class="spec-overlay-box label-spec-overlay">
+                            <div class="spec-overlay-header">
+                                <i class="fa-solid fa-sliders"></i>
+                                <span>LABEL SPECS</span>
+                            </div>
+                            <div class="spec-overlay-row"><span>Width:</span> <strong id="spec-label-width">600px</strong></div>
+                            <div class="spec-overlay-row"><span>Height:</span> <strong id="spec-label-height">400px</strong></div>
+                            <div class="spec-overlay-row"><span>Zoom Scale:</span> <strong id="spec-label-zoom">100%</strong></div>
+                            <div class="spec-overlay-row"><span>Logo Size:</span> <strong id="spec-label-logo">80px</strong></div>
+                            <div class="spec-overlay-row"><span>Product Img:</span> <strong id="spec-label-img">120px</strong></div>
+                            <div class="spec-overlay-row"><span>Preset:</span> <strong id="spec-label-preset">Medium (600x400)</strong></div>
+                        </div>
                     <div class="label-inner">
                         <div class="label-left-panel">
                             <div class="label-section-title">NUTRITIONAL INFORMATION</div>
@@ -1003,6 +1016,18 @@ Email: care@mewariachar.com</span>
             <!-- Poster Target Container with Scale Wrapper -->
             <div id="poster-scale-wrapper" style="display: flex; justify-content: center; align-items: flex-start; transition: all 0.2s ease; width: 100%;">
                 <div id="poster-canvas" class="poster-container theme-royal-durbar ratio-square">
+                    <!-- Poster Spec Overlay Box (Left Side Corner) -->
+                    <div id="poster-spec-overlay" class="spec-overlay-box poster-spec-overlay">
+                        <div class="spec-overlay-header">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>POSTER SPECS</span>
+                        </div>
+                        <div class="spec-overlay-row"><span>Format:</span> <strong id="spec-poster-format">Square (1:1)</strong></div>
+                        <div class="spec-overlay-row"><span>Theme:</span> <strong id="spec-poster-theme">Royal Shahi</strong></div>
+                        <div class="spec-overlay-row"><span>Structure:</span> <strong id="spec-poster-structure">Classic</strong></div>
+                        <div class="spec-overlay-row"><span>Frame Shape:</span> <strong id="spec-poster-shape">Square</strong></div>
+                    </div>
+
                     <!-- Watermark Pattern Background -->
                     <div class="poster-pattern"></div>
 

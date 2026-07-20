@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         autoFitLabelContent();
+        if (typeof window.updateSpecOverlays === 'function') window.updateSpecOverlays();
     }
 
     function autoFitLabelContent() {
@@ -229,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewRatioLabel.textContent = `Live Label Preview (${width}x${height} px, Zoom ${currentZoom}%)`;
         }
         autoFitLabelContent();
+        if (typeof window.updateSpecOverlays === 'function') window.updateSpecOverlays();
     }
 
     function toggleMode(mode) {
@@ -421,15 +423,114 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Attach listeners for live update of spec overlay box
+    const includeSpecsCheckbox = document.getElementById('export-include-specs');
+    if (includeSpecsCheckbox) {
+        includeSpecsCheckbox.addEventListener('change', () => {
+            if (typeof window.updateSpecOverlays === 'function') window.updateSpecOverlays();
+        });
+    }
+
+    const posterRadioGroups = ['poster-ratio', 'poster-theme', 'poster-layout-style', 'poster-image-shape'];
+    posterRadioGroups.forEach(groupName => {
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (typeof window.updateSpecOverlays === 'function') window.updateSpecOverlays();
+            });
+        });
+    });
+    
     // Initial sync
     const initialMode = document.querySelector('input[name="app-mode"]:checked')?.value || 'poster';
     toggleMode(initialMode);
     updateLabelPreview();
+    if (typeof window.updateSpecOverlays === 'function') window.updateSpecOverlays();
 });
 
 // =================================================================
-// SPECIFICATION & METADATA SHEET GENERATOR + 2-PAGE EXPORT ENGINE
+// SPECIFICATION & METADATA OVERLAY ENGINE
 // =================================================================
+
+window.updateSpecOverlays = function() {
+    const includeSpecsCheckbox = document.getElementById("export-include-specs");
+    const includeSpecs = includeSpecsCheckbox ? includeSpecsCheckbox.checked : true;
+    
+    const labelSpecOverlay = document.getElementById("label-spec-overlay");
+    const posterSpecOverlay = document.getElementById("poster-spec-overlay");
+
+    if (labelSpecOverlay) {
+        labelSpecOverlay.style.display = includeSpecs ? "flex" : "none";
+    }
+    if (posterSpecOverlay) {
+        posterSpecOverlay.style.display = includeSpecs ? "flex" : "none";
+    }
+
+    if (!includeSpecs) return;
+
+    // --- Update Label Specs ---
+    const widthVal = document.getElementById('label-width-slider')?.value || '600';
+    const heightVal = document.getElementById('label-height-slider')?.value || '400';
+    const zoomVal = document.getElementById('label-zoom-slider')?.value || '100';
+    const logoVal = document.getElementById('label-logo-slider')?.value || '80';
+    const productImgVal = document.getElementById('label-img-slider')?.value || '120';
+
+    const activeDimBtn = document.querySelector('.size-preset-btn.active');
+    let presetDimName = activeDimBtn ? activeDimBtn.textContent.trim() : `Custom (${widthVal}x${heightVal})`;
+
+    const elLabelWidth = document.getElementById('spec-label-width');
+    const elLabelHeight = document.getElementById('spec-label-height');
+    const elLabelZoom = document.getElementById('spec-label-zoom');
+    const elLabelLogo = document.getElementById('spec-label-logo');
+    const elLabelImg = document.getElementById('spec-label-img');
+    const elLabelPreset = document.getElementById('spec-label-preset');
+
+    if (elLabelWidth) elLabelWidth.textContent = widthVal + 'px';
+    if (elLabelHeight) elLabelHeight.textContent = heightVal + 'px';
+    if (elLabelZoom) elLabelZoom.textContent = zoomVal + '%';
+    if (elLabelLogo) elLabelLogo.textContent = logoVal + 'px';
+    if (elLabelImg) elLabelImg.textContent = productImgVal + 'px';
+    if (elLabelPreset) elLabelPreset.textContent = presetDimName;
+
+    // --- Update Poster Specs ---
+    const checkedRatio = document.querySelector('input[name="poster-ratio"]:checked');
+    let ratioText = "Square (1:1)";
+    if (checkedRatio) {
+        const spanText = checkedRatio.nextElementSibling?.querySelector('span')?.textContent;
+        if (spanText) ratioText = spanText.trim();
+    }
+
+    const checkedTheme = document.querySelector('input[name="poster-theme"]:checked');
+    let themeText = "Royal Durbar";
+    if (checkedTheme) {
+        const spanText = checkedTheme.nextElementSibling?.querySelector('span')?.textContent;
+        if (spanText) themeText = spanText.trim();
+    }
+
+    const checkedLayoutStyle = document.querySelector('input[name="poster-layout-style"]:checked');
+    let layoutText = "Classic";
+    if (checkedLayoutStyle) {
+        const spanText = checkedLayoutStyle.nextElementSibling?.querySelector('span')?.textContent;
+        if (spanText) layoutText = spanText.trim();
+    }
+
+    const checkedImageShape = document.querySelector('input[name="poster-image-shape"]:checked');
+    let shapeText = "Square";
+    if (checkedImageShape) {
+        const spanText = checkedImageShape.nextElementSibling?.querySelector('span')?.textContent;
+        if (spanText) shapeText = spanText.trim();
+    }
+
+    const elPosterFormat = document.getElementById('spec-poster-format');
+    const elPosterTheme = document.getElementById('spec-poster-theme');
+    const elPosterStructure = document.getElementById('spec-poster-structure');
+    const elPosterShape = document.getElementById('spec-poster-shape');
+
+    if (elPosterFormat) elPosterFormat.textContent = ratioText;
+    if (elPosterTheme) elPosterTheme.textContent = themeText;
+    if (elPosterStructure) elPosterStructure.textContent = layoutText;
+    if (elPosterShape) elPosterShape.textContent = shapeText;
+};
+
 
 function escapeHTML(str) {
     if (!str) return '';
@@ -767,36 +868,6 @@ async function handleExport(exportType) {
             const imgData1 = canvas1.toDataURL('image/png');
             pdf.addImage(imgData1, 'PNG', marginX1, marginY1, imgW1, imgH1, undefined, 'FAST');
 
-            if (includeSpecs) {
-                const specCardEl = renderSpecSheetDOM(metadata);
-                if (specCardEl) {
-                    const canvas2 = await html2canvas(specCardEl, {
-                        scale: 2.0,
-                        useCORS: true,
-                        allowTaint: true,
-                        backgroundColor: '#0f1117'
-                    });
-
-                    pdf.addPage('a4', 'landscape');
-                    const pdfW2 = pdf.internal.pageSize.getWidth();
-                    const pdfH2 = pdf.internal.pageSize.getHeight();
-                    const aspect2 = canvas2.width / canvas2.height;
-
-                    let imgW2 = pdfW2 - 10;
-                    let imgH2 = imgW2 / aspect2;
-                    if (imgH2 > pdfH2 - 10) {
-                        imgH2 = pdfH2 - 10;
-                        imgW2 = imgH2 * aspect2;
-                    }
-
-                    const marginX2 = (pdfW2 - imgW2) / 2;
-                    const marginY2 = (pdfH2 - imgH2) / 2;
-
-                    const imgData2 = canvas2.toDataURL('image/png');
-                    pdf.addImage(imgData2, 'PNG', marginX2, marginY2, imgW2, imgH2, undefined, 'FAST');
-                }
-            }
-
             pdf.save(`${fileNameBase}_Document.pdf`);
         } else {
             // PNG Export
@@ -806,27 +877,6 @@ async function handleExport(exportType) {
             document.body.appendChild(link1);
             link1.click();
             document.body.removeChild(link1);
-
-            // If include specs checked, also download Page 2 Spec Sheet PNG
-            if (includeSpecs) {
-                const specCardEl = renderSpecSheetDOM(metadata);
-                if (specCardEl) {
-                    const canvas2 = await html2canvas(specCardEl, {
-                        scale: 2.0,
-                        useCORS: true,
-                        allowTaint: true,
-                        backgroundColor: '#0f1117'
-                    });
-                    setTimeout(() => {
-                        const link2 = document.createElement('a');
-                        link2.download = `${fileNameBase}_SpecSheet.png`;
-                        link2.href = canvas2.toDataURL('image/png');
-                        document.body.appendChild(link2);
-                        link2.click();
-                        document.body.removeChild(link2);
-                    }, 500);
-                }
-            }
         }
     } catch (err) {
         console.error("Export error:", err);
